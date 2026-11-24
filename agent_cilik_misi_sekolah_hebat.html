@@ -1,0 +1,2717 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>AGENT CILIK: Misi Sekolah Hebat — Game Edukasi IFP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --electric-blue: #0088ff;
+      --deep-sky: #0284c7;
+      --arcade-purple: #7c3aed;
+      --neon-green: #10b981;
+      --soft-lime: #34d399;
+      --golden-yellow: #f59e0b;
+      --bright-orange: #f97316;
+      --danger-red: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      touch-action: manipulation;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Fredoka', 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+    }
+
+    /* Typography */
+    .font-arcade {
+      font-family: 'Nunito', sans-serif;
+      letter-spacing: 0.02em;
+    }
+
+    /* Arcade 3D Tactile Buttons */
+    .btn-arcade {
+      position: relative;
+      transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease, filter 0.15s ease;
+      cursor: pointer;
+      border-bottom-width: 8px;
+      min-width: 100px;
+      min-height: 100px;
+    }
+
+    .btn-arcade:active:not(:disabled) {
+      transform: translateY(5px) scale(0.97);
+      border-bottom-width: 3px;
+    }
+
+    .btn-arcade:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .btn-sm-arcade {
+      position: relative;
+      transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      border-bottom-width: 5px;
+    }
+
+    .btn-sm-arcade:active:not(:disabled) {
+      transform: translateY(3px) scale(0.96);
+      border-bottom-width: 2px;
+    }
+
+    /* Glow Effects */
+    .glow-gold {
+      box-shadow: 0 0 25px rgba(250, 204, 21, 0.7), 0 10px 20px rgba(0,0,0,0.2);
+    }
+    .glow-blue {
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.75), 0 10px 20px rgba(0,0,0,0.2);
+    }
+    .glow-purple {
+      box-shadow: 0 0 25px rgba(168, 85, 247, 0.75), 0 10px 20px rgba(0,0,0,0.2);
+    }
+    .glow-green {
+      box-shadow: 0 0 25px rgba(52, 211, 153, 0.75), 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .text-stroke-dark {
+      text-shadow: 0 4px 0 rgba(15, 23, 42, 0.45), 0 0 24px rgba(255, 255, 255, 0.6);
+    }
+
+    /* Character & World Animations */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+    }
+
+    @keyframes hoverBot {
+      0%, 100% { transform: translateY(0px) rotate(-2deg); }
+      50% { transform: translateY(-16px) rotate(3deg); }
+    }
+
+    @keyframes jumpJoy {
+      0%, 100% { transform: translateY(0) scale(1, 1); }
+      30% { transform: translateY(-35px) scale(0.94, 1.08); }
+      60% { transform: translateY(0) scale(1.08, 0.92); }
+      80% { transform: translateY(-14px) scale(0.98, 1.03); }
+    }
+
+    @keyframes thinkWobble {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-6deg); }
+      75% { transform: rotate(6deg); }
+    }
+
+    @keyframes cloudDrift {
+      0% { transform: translateX(-180px); }
+      100% { transform: translateX(calc(100vw + 200px)); }
+    }
+
+    @keyframes portalSpin {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.06); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    @keyframes popScore {
+      0% { opacity: 0; transform: translateY(20px) scale(0.5); }
+      25% { opacity: 1; transform: translateY(-20px) scale(1.25); }
+      80% { opacity: 1; transform: translateY(-55px) scale(1); }
+      100% { opacity: 0; transform: translateY(-80px) scale(0.9); }
+    }
+
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
+      70% { transform: scale(1.02); box-shadow: 0 0 0 18px rgba(250, 204, 21, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
+    }
+
+    .anim-float { animation: floatSlow 3.2s ease-in-out infinite; }
+    .anim-bot { animation: hoverBot 2.4s ease-in-out infinite; }
+    .anim-jump { animation: jumpJoy 0.8s ease-out infinite; }
+    .anim-think { animation: thinkWobble 1.2s ease-in-out infinite; }
+    .anim-portal { animation: portalSpin 14s linear infinite; }
+    .anim-pulse-ring { animation: pulseRing 2s infinite; }
+
+    .score-popup {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      animation: popScore 1.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Memory Card Flip */
+    .memory-card-inner {
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-style: preserve-3d;
+    }
+    .memory-card.flipped .memory-card-inner {
+      transform: rotateY(180deg);
+    }
+    .memory-face {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .memory-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Custom Scrollbar only if overflow needed on tiny screens */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.4); border-radius: 999px; }
+  </style>
+</head>
+<body class="text-slate-900 select-none overflow-hidden">
+
+  <!-- CANVAS CONFETTI & SPARKLES -->
+  <canvas id="fx-canvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <!-- FLOATING SCORE POPUPS CONTAINER -->
+  <div id="popup-container" class="fixed inset-0 pointer-events-none z-50"></div>
+
+  <!-- MAIN APP CONTAINER (100vw x 100vh) -->
+  <div id="app" class="relative w-screen h-screen flex flex-col justify-between overflow-hidden">
+
+    <!-- =========================================================
+         PERSISTENT TOP BAR (TEAM SCOREBOARD + IFP CONTROLS)
+    ========================================================== -->
+    <header id="top-bar" class="relative z-30 w-full px-4 pt-3 pb-2 flex items-center justify-between gap-3 bg-white/85 backdrop-blur-md border-b-4 border-sky-300 shadow-lg">
+      <!-- Left: Brand & Quick Nav -->
+      <div class="flex items-center gap-2.5 shrink-0">
+        <button onclick="handleHomeBtn()" title="Beranda" class="btn-sm-arcade w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-sky-500 hover:bg-sky-400 border-sky-700 text-white flex flex-col items-center justify-center shadow-md">
+          <span class="text-2xl md:text-3xl leading-none">🏠</span>
+          <span class="text-xs font-extrabold mt-1">HOME</span>
+        </button>
+
+        <button id="btn-back" onclick="handleBackBtn()" title="Kembali ke Peta" class="hidden btn-sm-arcade w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-indigo-500 hover:bg-indigo-400 border-indigo-700 text-white flex flex-col items-center justify-center shadow-md">
+          <span class="text-2xl md:text-3xl leading-none">🗺️</span>
+          <span class="text-xs font-extrabold mt-1">PETA</span>
+        </button>
+      </div>
+
+      <!-- Center: Dynamic Scoreboard (Solo or 4 Teams) -->
+      <div id="scoreboard-area" class="flex-1 flex items-center justify-center overflow-x-auto px-1">
+        <!-- Rendered dynamically by JS -->
+      </div>
+
+      <!-- Right: Audio, Teacher Settings, Fullscreen -->
+      <div class="flex items-center gap-2.5 shrink-0">
+        <button id="btn-mute-top" onclick="toggleGlobalMute()" title="Suara" class="btn-sm-arcade w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-amber-400 hover:bg-amber-300 border-amber-600 text-slate-900 flex flex-col items-center justify-center shadow-md">
+          <span id="mute-icon-top" class="text-2xl md:text-3xl leading-none">🔊</span>
+          <span id="mute-label-top" class="text-xs font-extrabold mt-1">SUARA</span>
+        </button>
+
+        <button onclick="openModal('modal-teacher')" title="Pengaturan Guru" class="btn-sm-arcade w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-purple-600 hover:bg-purple-500 border-purple-800 text-white flex flex-col items-center justify-center shadow-md">
+          <span class="text-2xl md:text-3xl leading-none">⚙️</span>
+          <span class="text-xs font-extrabold mt-1">GURU</span>
+        </button>
+
+        <button onclick="toggleFullscreen()" title="Layar Penuh" class="btn-sm-arcade w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-emerald-500 hover:bg-emerald-400 border-emerald-700 text-white flex flex-col items-center justify-center shadow-md">
+          <span class="text-2xl md:text-3xl leading-none">⛶</span>
+          <span class="text-xs font-extrabold mt-1">PENUH</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- =========================================================
+         MAIN STAGE (SCREEN ROUTER)
+    ========================================================== -->
+    <main id="main-stage" class="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center">
+      <!-- Screens are injected here cleanly -->
+    </main>
+
+  </div>
+
+  <!-- =========================================================
+       MODALS (HOW TO PLAY, AUDIO SETTINGS, TEACHER MODE, FEEDBACK)
+  ========================================================== -->
+
+  <!-- MODAL: CARA BERMAIN -->
+  <div id="modal-howto" class="hidden fixed inset-0 z-50 bg-slate-900/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border-8 border-sky-400 max-w-4xl w-full p-6 md:p-8 shadow-2xl relative">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-3xl md:text-4xl font-black text-sky-700 flex items-center gap-3">
+          <span>📖</span> CARA BERMAIN AGENT CILIK
+        </h2>
+        <button onclick="closeModal('modal-howto')" class="btn-sm-arcade w-16 h-16 rounded-2xl bg-rose-500 border-rose-700 text-white text-3xl font-black flex items-center justify-center">✕</button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-lg md:text-xl font-bold text-slate-700">
+        <div class="bg-sky-50 p-4 rounded-2xl border-2 border-sky-200 flex items-start gap-3">
+          <span class="text-4xl">👆</span>
+          <div>
+            <p class="text-sky-800 font-black">1. Sentuh Layar IFP</p>
+            <p class="text-base font-semibold">Maju ke depan kelas dan sentuh tombol atau kartu jawaban besar di layar dengan jari.</p>
+          </div>
+        </div>
+        <div class="bg-purple-50 p-4 rounded-2xl border-2 border-purple-200 flex items-start gap-3">
+          <span class="text-4xl">👥</span>
+          <div>
+            <p class="text-purple-800 font-black">2. Mode Solo atau 4 Tim</p>
+            <p class="text-base font-semibold">Mainkan sendiri secara bergiliran atau berlomba mengumpulkan poin dalam 4 regu kelas!</p>
+          </div>
+        </div>
+        <div class="bg-emerald-50 p-4 rounded-2xl border-2 border-emerald-200 flex items-start gap-3">
+          <span class="text-4xl">🗺️</span>
+          <div>
+            <p class="text-emerald-800 font-black">3. Taklukkan 5 Zona Misi</p>
+            <p class="text-base font-semibold">Selesaikan kuis cepat, pilah tindakan aman, cocokkan kartu, dan hadapi tantangan akhir.</p>
+          </div>
+        </div>
+        <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-200 flex items-start gap-3">
+          <span class="text-4xl">🛡️</span>
+          <div>
+            <p class="text-amber-800 font-black">4. Jadi Pelindung Diri</p>
+            <p class="text-base font-semibold">Berani berkata TIDAK pada zat berbahaya, selalu lapor guru/orang tua jika ada hal mencurigakan.</p>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-center">
+        <button onclick="closeModal('modal-howto')" class="btn-arcade px-10 py-4 rounded-3xl bg-emerald-500 hover:bg-emerald-400 border-emerald-700 text-white text-2xl font-black shadow-xl">
+          👍 SIAP MENGERTI!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PENGATUR SUARA -->
+  <div id="modal-audio" class="hidden fixed inset-0 z-50 bg-slate-900/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border-8 border-amber-400 max-w-2xl w-full p-6 md:p-8 shadow-2xl">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-3xl md:text-4xl font-black text-amber-600 flex items-center gap-3">
+          <span>🔊</span> PENGATUR SUARA
+        </h2>
+        <button onclick="closeModal('modal-audio')" class="btn-sm-arcade w-16 h-16 rounded-2xl bg-rose-500 border-rose-700 text-white text-3xl font-black flex items-center justify-center">✕</button>
+      </div>
+
+      <div class="space-y-4">
+        <button onclick="toggleAudioSetting('music')" id="toggle-music-btn" class="w-full btn-sm-arcade p-5 rounded-2xl bg-sky-100 border-sky-400 flex items-center justify-between text-2xl font-black text-sky-900">
+          <span>🎵 Musik Latar Arcade</span>
+          <span id="status-music" class="px-4 py-1 rounded-xl bg-emerald-500 text-white">AKTIF</span>
+        </button>
+
+        <button onclick="toggleAudioSetting('sfx')" id="toggle-sfx-btn" class="w-full btn-sm-arcade p-5 rounded-2xl bg-purple-100 border-purple-400 flex items-center justify-between text-2xl font-black text-purple-900">
+          <span>✨ Efek Suara (SFX)</span>
+          <span id="status-sfx" class="px-4 py-1 rounded-xl bg-emerald-500 text-white">AKTIF</span>
+        </button>
+
+        <button onclick="toggleAudioSetting('voice')" id="toggle-voice-btn" class="w-full btn-sm-arcade p-5 rounded-2xl bg-amber-100 border-amber-400 flex items-center justify-between text-2xl font-black text-amber-900">
+          <span>🗣️ Narasi Suara (Indonesia)</span>
+          <span id="status-voice" class="px-4 py-1 rounded-xl bg-emerald-500 text-white">AKTIF</span>
+        </button>
+
+        <div class="pt-2">
+          <label class="block text-xl font-black text-slate-700 mb-2">Volume Utama: <span id="vol-display">80%</span></label>
+          <input type="range" min="0" max="100" value="80" oninput="setMasterVolume(this.value)" class="w-full h-8 accent-amber-500 cursor-pointer rounded-xl" />
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-center gap-4">
+        <button onclick="testAudioVoice()" class="btn-sm-arcade px-6 py-4 rounded-2xl bg-sky-500 border-sky-700 text-white text-xl font-black">
+          🎤 TES SUARA BIMO
+        </button>
+        <button onclick="closeModal('modal-audio')" class="btn-sm-arcade px-8 py-4 rounded-2xl bg-emerald-500 border-emerald-700 text-white text-xl font-black">
+          ✅ SIMPAN
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: MODE GURU (PENGATURAN KELAS TANPA LOGIN) -->
+  <div id="modal-teacher" class="hidden fixed inset-0 z-50 bg-slate-900/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border-8 border-purple-500 max-w-3xl w-full p-6 md:p-8 shadow-2xl max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-3xl md:text-4xl font-black text-purple-700 flex items-center gap-3">
+          <span>👩‍🏫</span> PANEL KONTROL GURU
+        </h2>
+        <button onclick="closeModal('modal-teacher')" class="btn-sm-arcade w-16 h-16 rounded-2xl bg-rose-500 border-rose-700 text-white text-3xl font-black flex items-center justify-center">✕</button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Jumlah Soal per Zona -->
+        <div class="bg-purple-50 p-4 rounded-2xl border-2 border-purple-200">
+          <p class="text-xl font-black text-purple-900 mb-3">📝 Jumlah Soal per Zona:</p>
+          <div class="grid grid-cols-3 gap-2">
+            <button onclick="setQuestionsPerZone(3)" id="qcount-3" class="btn-sm-arcade py-3 rounded-xl bg-white border-purple-300 font-black text-xl">3 Soal</button>
+            <button onclick="setQuestionsPerZone(5)" id="qcount-5" class="btn-sm-arcade py-3 rounded-xl bg-purple-600 text-white border-purple-800 font-black text-xl">5 Soal</button>
+            <button onclick="setQuestionsPerZone(7)" id="qcount-7" class="btn-sm-arcade py-3 rounded-xl bg-white border-purple-300 font-black text-xl">7 Soal</button>
+          </div>
+        </div>
+
+        <!-- Timer Mode -->
+        <div class="bg-sky-50 p-4 rounded-2xl border-2 border-sky-200">
+          <p class="text-xl font-black text-sky-900 mb-3">⏱️ Mode Waktu Kuis:</p>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="setTimerEnabled(false)" id="timer-off" class="btn-sm-arcade py-3 rounded-xl bg-sky-600 text-white border-sky-800 font-black text-xl">Santai (Tanpa Timer)</button>
+            <button onclick="setTimerEnabled(true)" id="timer-on" class="btn-sm-arcade py-3 rounded-xl bg-white border-sky-300 font-black text-xl">Tantangan (20 dtk)</button>
+          </div>
+        </div>
+
+        <!-- Pindah Giliran Tim Manual -->
+        <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-200">
+          <p class="text-xl font-black text-amber-900 mb-3">🔄 Giliran Tim Aktif (Mode Tim):</p>
+          <div class="grid grid-cols-4 gap-2">
+            <button onclick="selectActiveTeam(0)" class="btn-sm-arcade py-3 rounded-xl bg-blue-500 border-blue-700 text-white font-black text-lg">🔵 Biru</button>
+            <button onclick="selectActiveTeam(1)" class="btn-sm-arcade py-3 rounded-xl bg-emerald-500 border-emerald-700 text-white font-black text-lg">🟢 Hijau</button>
+            <button onclick="selectActiveTeam(2)" class="btn-sm-arcade py-3 rounded-xl bg-amber-400 border-amber-600 text-slate-900 font-black text-lg">🟡 Kuning</button>
+            <button onclick="selectActiveTeam(3)" class="btn-sm-arcade py-3 rounded-xl bg-purple-500 border-purple-700 text-white font-black text-lg">🟣 Ungu</button>
+          </div>
+        </div>
+
+        <!-- Reset Skor & Misi -->
+        <div class="bg-rose-50 p-4 rounded-2xl border-2 border-rose-200 flex flex-col justify-between">
+          <p class="text-xl font-black text-rose-900 mb-2">🔄 Reset Permainan Kelas:</p>
+          <button onclick="resetAllGameProgress()" class="btn-sm-arcade w-full py-3 rounded-xl bg-rose-500 hover:bg-rose-400 border-rose-700 text-white font-black text-xl">
+            🗑️ RESET SKOR & PROGRES MISI
+          </button>
+        </div>
+      </div>
+
+      <!-- Riwayat Skor Sesi -->
+      <div class="mt-4 bg-slate-100 p-4 rounded-2xl border-2 border-slate-200">
+        <p class="text-lg font-black text-slate-800 mb-1">📊 Status Sesi Kelas Saat Ini:</p>
+        <p id="teacher-session-summary" class="text-base font-bold text-slate-600">Bank Soal: 44 Soal Edukatif • Mode: Solo Agent</p>
+      </div>
+
+      <div class="mt-5 flex justify-end">
+        <button onclick="closeModal('modal-teacher')" class="btn-sm-arcade px-8 py-4 rounded-2xl bg-emerald-500 border-emerald-700 text-white text-xl font-black">
+          ✅ TUTUP PANEL
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: KONFIRMASI RESET / HOME -->
+  <div id="modal-confirm" class="hidden fixed inset-0 z-50 bg-slate-900/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border-8 border-amber-400 max-w-xl w-full p-8 text-center shadow-2xl">
+      <div class="text-6xl mb-3">🤔</div>
+      <h3 id="confirm-title" class="text-3xl font-black text-slate-800 mb-2">Kembali ke Halaman Awal?</h3>
+      <p id="confirm-desc" class="text-xl font-bold text-slate-600 mb-6">Skor dan progres misi yang sedang berjalan akan tersimpan sementara.</p>
+      <div class="flex justify-center gap-4">
+        <button onclick="closeModal('modal-confirm')" class="btn-sm-arcade px-8 py-4 rounded-2xl bg-slate-300 border-slate-500 text-slate-800 text-2xl font-black">
+          BATAL
+        </button>
+        <button id="confirm-yes-btn" class="btn-sm-arcade px-8 py-4 rounded-2xl bg-sky-500 border-sky-700 text-white text-2xl font-black">
+          YA, LANJUT
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================================
+       1. SVG CHARACTERS & ILLUSTRATIONS LIBRARY (ORIGINAL VECTOR ART)
+    ========================================================================= */
+    const CharactersSVG = {
+      raka: (mood = 'happy', extraClass = '') => `
+        <svg viewBox="0 0 220 260" class="w-full h-full drop-shadow-xl ${extraClass}" xmlns="http://www.w3.org/2000/svg">
+          <!-- Shadow -->
+          <ellipse cx="110" cy="246" rx="58" ry="11" fill="rgba(15,23,42,0.22)"/>
+          <!-- Backpack -->
+          <rect x="52" y="122" width="116" height="68" rx="22" fill="#f59e0b" stroke="#b45309" stroke-width="5"/>
+          <!-- Legs (Red SD Shorts) -->
+          <rect x="76" y="182" width="26" height="42" rx="10" fill="#dc2626" stroke="#991b1b" stroke-width="4"/>
+          <rect x="118" y="182" width="26" height="42" rx="10" fill="#dc2626" stroke="#991b1b" stroke-width="4"/>
+          <!-- Shoes -->
+          <rect x="68" y="218" width="38" height="22" rx="11" fill="#1e293b"/>
+          <rect x="114" y="218" width="38" height="22" rx="11" fill="#1e293b"/>
+          <path d="M74 226 H98 M120 226 H144" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+          <!-- Torso (White Shirt + Electric Blue Agent Jacket) -->
+          <rect x="68" y="114" width="84" height="74" rx="22" fill="#0284c7" stroke="#0369a1" stroke-width="5"/>
+          <path d="M96 114 L110 176 L124 114 Z" fill="#ffffff"/>
+          <!-- Red Tie -->
+          <polygon points="106,118 114,118 116,152 110,160 104,152" fill="#ef4444"/>
+          <!-- Agent Badge -->
+          <circle cx="86" cy="140" r="10" fill="#facc15" stroke="#ca8a04" stroke-width="3"/>
+          <text x="86" y="144" text-anchor="middle" font-size="11" font-weight="900" fill="#78350f">★</text>
+          <!-- Arms -->
+          ${mood === 'jump'
+            ? `<path d="M68 126 Q38 92 48 68" stroke="#0284c7" stroke-width="18" stroke-linecap="round" fill="none"/>
+               <circle cx="48" cy="66" r="11" fill="#fed7aa"/>
+               <path d="M152 126 Q182 92 172 68" stroke="#0284c7" stroke-width="18" stroke-linecap="round" fill="none"/>
+               <circle cx="172" cy="66" r="11" fill="#fed7aa"/>`
+            : `<path d="M68 128 Q46 152 56 174" stroke="#0284c7" stroke-width="18" stroke-linecap="round" fill="none"/>
+               <circle cx="56" cy="176" r="11" fill="#fed7aa"/>
+               <path d="M152 128 Q174 152 164 174" stroke="#0284c7" stroke-width="18" stroke-linecap="round" fill="none"/>
+               <circle cx="164" cy="176" r="11" fill="#fed7aa"/>`
+          }
+          <!-- Head -->
+          <circle cx="110" cy="72" r="46" fill="#fed7aa" stroke="#fdba74" stroke-width="4"/>
+          <!-- Spiky Hero Hair -->
+          <path d="M62 66 C60 26, 160 26, 158 66 C152 44, 136 38, 122 45 C114 30, 96 30, 88 45 C74 38, 66 48, 62 66 Z" fill="#1e293b"/>
+          <path d="M78 36 L92 18 L104 34 L118 16 L130 35 L144 24 L146 44" fill="#1e293b"/>
+          <!-- Eyes -->
+          <circle cx="93" cy="72" r="7" fill="#0f172a"/>
+          <circle cx="127" cy="72" r="7" fill="#0f172a"/>
+          <circle cx="95" cy="70" r="2.5" fill="#ffffff"/>
+          <circle cx="129" cy="70" r="2.5" fill="#ffffff"/>
+          <!-- Eyebrows -->
+          <path d="M83 60 Q93 55 102 60" stroke="#1e293b" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <path d="M118 60 Q127 55 137 60" stroke="#1e293b" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <!-- Mouth -->
+          ${mood === 'think'
+            ? `<circle cx="114" cy="94" r="6" fill="#be123c"/>`
+            : `<path d="M94 89 Q110 106 126 89" stroke="#be123c" stroke-width="5" stroke-linecap="round" fill="none"/>`
+          }
+          <!-- Cheeks -->
+          <circle cx="80" cy="84" r="6" fill="#fda4af" opacity="0.65"/>
+          <circle cx="140" cy="84" r="6" fill="#fda4af" opacity="0.65"/>
+        </svg>
+      `,
+
+      naya: (mood = 'happy', extraClass = '') => `
+        <svg viewBox="0 0 220 260" class="w-full h-full drop-shadow-xl ${extraClass}" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="110" cy="246" rx="58" ry="11" fill="rgba(15,23,42,0.22)"/>
+          <!-- Pigtails -->
+          <circle cx="56" cy="64" r="20" fill="#1e293b"/>
+          <circle cx="164" cy="64" r="20" fill="#1e293b"/>
+          <circle cx="66" cy="56" r="7" fill="#facc15"/>
+          <circle cx="154" cy="56" r="7" fill="#facc15"/>
+          <!-- Legs -->
+          <rect x="82" y="188" width="20" height="36" rx="8" fill="#fed7aa"/>
+          <rect x="118" y="188" width="20" height="36" rx="8" fill="#fed7aa"/>
+          <!-- Shoes -->
+          <rect x="74" y="218" width="34" height="22" rx="11" fill="#7c3aed"/>
+          <rect x="112" y="218" width="34" height="22" rx="11" fill="#7c3aed"/>
+          <!-- Red Pleated Skirt -->
+          <polygon points="74,166 146,166 156,196 64,196" fill="#dc2626" stroke="#991b1b" stroke-width="4" stroke-linejoin="round"/>
+          <!-- Purple Agent Jacket -->
+          <rect x="70" y="114" width="80" height="58" rx="20" fill="#7c3aed" stroke="#5b21b6" stroke-width="5"/>
+          <path d="M96 114 L110 162 L124 114 Z" fill="#ffffff"/>
+          <!-- Star Pin -->
+          <circle cx="132" cy="138" r="10" fill="#34d399" stroke="#059669" stroke-width="3"/>
+          <text x="132" y="142" text-anchor="middle" font-size="11" font-weight="900" fill="#064e3b">✦</text>
+          <!-- Arms -->
+          ${mood === 'jump'
+            ? `<path d="M70 126 Q42 90 52 68" stroke="#7c3aed" stroke-width="17" stroke-linecap="round" fill="none"/>
+               <circle cx="52" cy="66" r="10" fill="#fed7aa"/>
+               <path d="M150 126 Q178 90 168 68" stroke="#7c3aed" stroke-width="17" stroke-linecap="round" fill="none"/>
+               <circle cx="168" cy="66" r="10" fill="#fed7aa"/>`
+            : `<path d="M70 128 Q48 150 58 170" stroke="#7c3aed" stroke-width="17" stroke-linecap="round" fill="none"/>
+               <circle cx="58" cy="172" r="10" fill="#fed7aa"/>
+               <path d="M150 128 Q172 150 162 170" stroke="#7c3aed" stroke-width="17" stroke-linecap="round" fill="none"/>
+               <circle cx="162" cy="172" r="10" fill="#fed7aa"/>`
+          }
+          <!-- Head -->
+          <circle cx="110" cy="72" r="45" fill="#fed7aa" stroke="#fdba74" stroke-width="4"/>
+          <!-- Hair Bangs -->
+          <path d="M64 68 C64 22, 156 22, 156 68 C144 48, 128 46, 110 54 C92 46, 76 48, 64 68 Z" fill="#1e293b"/>
+          <!-- Eyes -->
+          <circle cx="93" cy="73" r="7" fill="#0f172a"/>
+          <circle cx="127" cy="73" r="7" fill="#0f172a"/>
+          <circle cx="95" cy="71" r="2.5" fill="#ffffff"/>
+          <circle cx="129" cy="71" r="2.5" fill="#ffffff"/>
+          <!-- Mouth -->
+          <path d="M95 89 Q110 105 125 89" stroke="#be123c" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <circle cx="80" cy="84" r="6" fill="#fda4af" opacity="0.7"/>
+          <circle cx="140" cy="84" r="6" fill="#fda4af" opacity="0.7"/>
+        </svg>
+      `,
+
+      bimo: (mood = 'happy', extraClass = 'anim-bot') => `
+        <svg viewBox="0 0 200 210" class="w-full h-full drop-shadow-xl ${extraClass}" xmlns="http://www.w3.org/2000/svg">
+          <!-- Hover Thruster Glow -->
+          <ellipse cx="100" cy="186" rx="34" ry="10" fill="#38bdf8" opacity="0.55"/>
+          <ellipse cx="100" cy="184" rx="20" ry="6" fill="#fef08a"/>
+          <!-- Antenna -->
+          <line x1="100" y1="36" x2="100" y2="16" stroke="#0284c7" stroke-width="6" stroke-linecap="round"/>
+          <circle cx="100" cy="14" r="10" fill="${mood === 'alert' ? '#ef4444' : '#facc15'}" stroke="#ffffff" stroke-width="3"/>
+          <!-- Floating Arms -->
+          <rect x="26" y="102" width="22" height="38" rx="11" fill="#0ea5e9" stroke="#0369a1" stroke-width="4"/>
+          <rect x="152" y="102" width="22" height="38" rx="11" fill="#0ea5e9" stroke="#0369a1" stroke-width="4"/>
+          <!-- Body -->
+          <rect x="58" y="114" width="84" height="56" rx="24" fill="#e0f2fe" stroke="#0284c7" stroke-width="5"/>
+          <rect x="78" y="128" width="44" height="24" rx="10" fill="#38bdf8"/>
+          <circle cx="90" cy="140" r="4" fill="#fef08a"/>
+          <circle cx="100" cy="140" r="4" fill="#34d399"/>
+          <circle cx="110" cy="140" r="4" fill="#f472b6"/>
+          <!-- Head -->
+          <rect x="44" y="36" width="112" height="84" rx="34" fill="#38bdf8" stroke="#0369a1" stroke-width="6"/>
+          <!-- LED Visor Screen -->
+          <rect x="58" y="50" width="84" height="54" rx="20" fill="#0f172a"/>
+          <!-- Expressive LED Eyes -->
+          ${mood === 'think'
+            ? `<circle cx="82" cy="74" r="9" fill="#facc15"/>
+               <path d="M108 74 H126" stroke="#facc15" stroke-width="6" stroke-linecap="round"/>
+               <path d="M90 92 Q100 86 110 92" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" fill="none"/>`
+            : `<path d="M72 76 Q82 62 92 76" stroke="#34d399" stroke-width="6" stroke-linecap="round" fill="none"/>
+               <path d="M108 76 Q118 62 128 76" stroke="#34d399" stroke-width="6" stroke-linecap="round" fill="none"/>
+               <path d="M88 88 Q100 98 112 88" stroke="#38bdf8" stroke-width="5" stroke-linecap="round" fill="none"/>`
+          }
+        </svg>
+      `,
+
+      guruLina: (extraClass = '') => `
+        <svg viewBox="0 0 220 260" class="w-full h-full drop-shadow-xl ${extraClass}" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="110" cy="246" rx="60" ry="11" fill="rgba(15,23,42,0.22)"/>
+          <!-- Hair Back -->
+          <rect x="64" y="34" width="92" height="92" rx="40" fill="#334155"/>
+          <!-- Skirt / Blazer -->
+          <rect x="74" y="176" width="72" height="58" rx="14" fill="#1e3a8a"/>
+          <rect x="66" y="112" width="88" height="72" rx="24" fill="#0d9488" stroke="#115e59" stroke-width="5"/>
+          <path d="M94 112 L110 168 L126 112 Z" fill="#fef3c7"/>
+          <!-- Arms -->
+          <path d="M66 126 Q46 150 58 172" stroke="#0d9488" stroke-width="18" stroke-linecap="round" fill="none"/>
+          <circle cx="58" cy="174" r="10" fill="#fed7aa"/>
+          <path d="M154 126 Q174 150 162 172" stroke="#0d9488" stroke-width="18" stroke-linecap="round" fill="none"/>
+          <circle cx="162" cy="174" r="10" fill="#fed7aa"/>
+          <!-- Head -->
+          <circle cx="110" cy="70" r="44" fill="#fed7aa" stroke="#fdba74" stroke-width="4"/>
+          <!-- Hijab / Neat Hair -->
+          <path d="M66 66 C66 24, 154 24, 154 66 C140 46, 80 46, 66 66 Z" fill="#334155"/>
+          <!-- Glasses -->
+          <rect x="78" y="61" width="26" height="20" rx="7" fill="rgba(255,255,255,0.4)" stroke="#0f172a" stroke-width="3.5"/>
+          <rect x="116" y="61" width="26" height="20" rx="7" fill="rgba(255,255,255,0.4)" stroke="#0f172a" stroke-width="3.5"/>
+          <line x1="104" y1="70" x2="116" y2="70" stroke="#0f172a" stroke-width="3.5"/>
+          <!-- Eyes -->
+          <circle cx="91" cy="71" r="5" fill="#0f172a"/>
+          <circle cx="129" cy="71" r="5" fill="#0f172a"/>
+          <!-- Warm Smile -->
+          <path d="M94 90 Q110 104 126 90" stroke="#be123c" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      `,
+
+      bossCloud: (cleared = false) => `
+        <svg viewBox="0 0 320 210" class="w-full h-full drop-shadow-2xl ${cleared ? 'anim-float' : 'anim-think'}" xmlns="http://www.w3.org/2000/svg">
+          <g fill="${cleared ? '#fef08a' : '#64748b'}" stroke="${cleared ? '#f59e0b' : '#334155'}" stroke-width="7">
+            <circle cx="95" cy="120" r="52"/>
+            <circle cx="160" cy="92" r="64"/>
+            <circle cx="225" cy="120" r="52"/>
+            <rect x="85" y="112" width="150" height="60" rx="30" stroke="none"/>
+          </g>
+          ${cleared
+            ? `<text x="160" y="118" text-anchor="middle" font-size="54" font-weight="900" fill="#d97706">✨☀️</text>
+               <path d="M130 144 Q160 168 190 144" stroke="#b45309" stroke-width="7" stroke-linecap="round" fill="none"/>`
+            : `<text x="108" y="102" text-anchor="middle" font-size="38" font-weight="900" fill="#facc15">?</text>
+               <text x="160" y="76" text-anchor="middle" font-size="46" font-weight="900" fill="#fb923c">?</text>
+               <text x="212" y="102" text-anchor="middle" font-size="38" font-weight="900" fill="#facc15">?</text>
+               <circle cx="136" cy="124" r="9" fill="#ffffff"/>
+               <circle cx="184" cy="124" r="9" fill="#ffffff"/>
+               <circle cx="136" cy="124" r="4.5" fill="#0f172a"/>
+               <circle cx="184" cy="124" r="4.5" fill="#0f172a"/>
+               <path d="M136 150 Q160 136 184 150" stroke="#f8fafc" stroke-width="6" stroke-linecap="round" fill="none"/>`
+          }
+        </svg>
+      `
+    };
+
+    /* =========================================================================
+       2. WEB AUDIO SYNTHESIZER & BAHASA INDONESIA VOICE ENGINE
+    ========================================================================= */
+    const AudioEngine = {
+      ctx: null,
+      bgmTimer: null,
+      currentTrack: null,
+      settings: {
+        muted: false,
+        music: true,
+        sfx: true,
+        voice: true,
+        volume: 0.8
+      },
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            this.ctx = new AudioCtx();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      },
+
+      playTone(freq, type = 'sine', duration = 0.2, delay = 0, volScale = 0.25) {
+        if (this.settings.muted || !this.settings.sfx) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const now = this.ctx.currentTime + delay;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+
+        const vol = Math.max(0.001, this.settings.volume * volScale);
+        gain.gain.setValueAtTime(vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + duration + 0.02);
+      },
+
+      sfxClick() {
+        this.playTone(580, 'triangle', 0.09, 0, 0.25);
+        this.playTone(860, 'sine', 0.08, 0.04, 0.2);
+      },
+
+      sfxCorrect() {
+        this.playTone(523.25, 'triangle', 0.14, 0, 0.3);     // C5
+        this.playTone(659.25, 'triangle', 0.14, 0.09, 0.3);  // E5
+        this.playTone(783.99, 'triangle', 0.16, 0.18, 0.32); // G5
+        this.playTone(1046.50, 'sine', 0.32, 0.27, 0.35);    // C6
+      },
+
+      sfxWrong() {
+        this.playTone(349.23, 'sine', 0.22, 0, 0.22);    // F4
+        this.playTone(293.66, 'sine', 0.32, 0.16, 0.22); // D4
+      },
+
+      sfxCoin() {
+        this.playTone(987.77, 'sine', 0.1, 0, 0.25);
+        this.playTone(1318.51, 'sine', 0.25, 0.08, 0.25);
+      },
+
+      sfxTick() {
+        this.playTone(740, 'sine', 0.07, 0, 0.16);
+      },
+
+      sfxFanfare() {
+        const notes = [523.25, 659.25, 783.99, 1046.5, 783.99, 1046.5];
+        const times = [0, 0.12, 0.24, 0.36, 0.54, 0.68];
+        notes.forEach((n, i) => this.playTone(n, 'triangle', 0.25, times[i], 0.32));
+      },
+
+      startBGM(track = 'opening') {
+        if (this.currentTrack === track && this.bgmTimer) return;
+        this.stopBGM();
+        this.currentTrack = track;
+
+        const melodies = {
+          opening: [523, 659, 784, 659, 880, 784, 659, 587],
+          gameplay: [440, 523, 659, 523, 587, 659, 523, 493],
+          final: [587, 698, 880, 698, 932, 880, 784, 698],
+          victory: [523, 659, 784, 1046, 880, 1046, 1174, 1046]
+        };
+
+        const seq = melodies[track] || melodies.opening;
+        let step = 0;
+
+        this.bgmTimer = setInterval(() => {
+          if (this.settings.muted || !this.settings.music || !this.ctx || this.ctx.state !== 'running') return;
+          const freq = seq[step % seq.length];
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+          const vol = Math.max(0.001, this.settings.volume * 0.07);
+          gain.gain.setValueAtTime(vol, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.34);
+          step++;
+        }, track === 'final' ? 340 : 420);
+      },
+
+      stopBGM() {
+        if (this.bgmTimer) {
+          clearInterval(this.bgmTimer);
+          this.bgmTimer = null;
+        }
+      },
+
+      speak(text) {
+        if (this.settings.muted || !this.settings.voice) return;
+        if (!('speechSynthesis' in window)) return;
+        try {
+          window.speechSynthesis.cancel();
+          const utter = new SpeechSynthesisUtterance(text);
+          utter.lang = 'id-ID';
+          utter.rate = 1.02;
+          utter.pitch = 1.12;
+          utter.volume = this.settings.volume;
+          window.speechSynthesis.speak(utter);
+        } catch (e) {
+          // Graceful fallback if speech synthesis blocked
+        }
+      }
+    };
+
+    /* =========================================================================
+       3. COMPREHENSIVE QUESTION & SCENARIO BANK (44 QUALITY ITEMS)
+    ========================================================================= */
+    const QUESTION_BANK = [
+      {
+        icon: "💊",
+        category: "Keamanan Obat",
+        q: "Seorang teman menawarkan tablet berwarna cerah yang tidak diketahui asalnya. Apa tindakanmu?",
+        options: [
+          "Langsung mencobanya karena penasaran",
+          "Menolaknya dengan tegas dan memberi tahu guru atau orang tua",
+          "Membawanya pulang untuk disimpan di laci",
+          "Memberikannya kepada teman sebangku"
+        ],
+        answer: 1,
+        feedback: "Hebat! Jangan pernah mencoba obat yang tidak diketahui asalnya. Segera beri tahu orang dewasa terpercaya."
+      },
+      {
+        icon: "🩺",
+        category: "Penggunaan Obat Aman",
+        q: "Mengapa kita tidak boleh minum obat tanpa petunjuk dokter atau orang tua?",
+        options: [
+          "Agar obat di rumah tidak cepat habis",
+          "Karena obat hanya boleh dimiliki oleh guru",
+          "Penggunaan obat tanpa aturan dapat membahayakan kesehatan tubuh",
+          "Agar teman-teman tidak mengetahuinya"
+        ],
+        answer: 2,
+        feedback: "Benar sekali! Obat harus diminum sesuai dosis dan petunjuk tenaga kesehatan atau orang tua."
+      },
+      {
+        icon: "📦",
+        category: "Detektif Keselamatan",
+        q: "Kamu menemukan bungkusan atau paket tak dikenal di dekat pagar sekolah. Apa yang harus dilakukan?",
+        options: [
+          "Membuka isinya untuk melihat apa di dalamnya",
+          "Memindahkannya ke dalam tas sekolah",
+          "Menjauhinya dan segera melapor kepada guru atau satpam sekolah",
+          "Melemparkannya ke tempat sampah sendiri"
+        ],
+        answer: 2,
+        feedback: "Tindakan tepat! Jangan menyentuh barang mencurigakan. Utamakan keselamatan dan segera lapor guru."
+      },
+      {
+        icon: "🎒",
+        category: "Pencegahan Peredaran Gelap",
+        q: "Seseorang yang baru dikenal memintamu menitipkan barang misterius di tasmu dengan imbalan uang jajan. Sikapmu adalah...",
+        options: [
+          "Menolak dengan tegas dan segera menjauh mencari bantuan orang dewasa",
+          "Menerima titipannya karena dijanjikan hadiah",
+          "Menyembunyikannya di bawah meja kelas",
+          "Menyuruh adik kelas yang membawanya"
+        ],
+        answer: 0,
+        feedback: "Keputusan cerdas! Jangan pernah mau dititipi atau mengantar barang yang tidak diketahui isinya."
+      },
+      {
+        icon: "🤝",
+        category: "Sahabat Peduli",
+        q: "Jika ada teman yang tampak murung dan mengaku diajak mencoba zat berbahaya, tindakan terbaik kita adalah...",
+        options: [
+          "Mengejeknya di depan teman-teman lain",
+          "Menjauhinya dan menyebarkan rahasianya",
+          "Mendukungnya agar mau melapor kepada guru BK atau orang tua",
+          "Menyalahkannya terus-menerus"
+        ],
+        answer: 2,
+        feedback: "Luar biasa! Sahabat peduli selalu mendukung teman untuk mencari pertolongan orang dewasa terpercaya."
+      },
+      {
+        icon: "🚫",
+        category: "Berani Berkata Tidak",
+        q: "Bagaimana cara terbaik menolak ajakan teman yang mengajak melakukan hal berbahaya?",
+        options: [
+          "Ikut saja supaya tidak dianggap penakut",
+          "Mengatakan 'Tidak, terima kasih!' dengan tegas lalu pergi ke tempat aman",
+          "Diam saja tanpa melakukan apa-apa",
+          "Marah-marah dan memukul teman"
+        ],
+        answer: 1,
+        feedback: "Mantap! Berkata TIDAK dengan sopan, tegas, dan percaya diri adalah tanda anak pemberani."
+      },
+      {
+        icon: "🥤",
+        category: "Waspada Makanan & Minuman",
+        q: "Saat bermain di taman umum, orang asing memberimu minuman terbuka. Apa langkah paling aman?",
+        options: [
+          "Meminumnya sampai habis karena haus",
+          "Mencicipinya sedikit saja",
+          "Menolak dengan sopan dan kembali ke dekat orang tua atau guru",
+          "Memberikannya kepada teman"
+        ],
+        answer: 2,
+        feedback: "Cerdas! Jangan menerima makanan atau minuman terbuka dari orang yang tidak dikenal."
+      },
+      {
+        icon: "⚽",
+        category: "Pergaulan Sehat",
+        q: "Kegiatan mana yang termasuk cara menjaga diri agar terhindar dari penyalahgunaan zat berbahaya?",
+        options: [
+          "Mengikuti kegiatan olahraga, pramuka, dan hobi positif bersama teman",
+          "Sering pulang sekolah larut tanpa memberi tahu orang tua",
+          "Mencoba segala hal baru tanpa bertanya kepada guru",
+          "Bermain di tempat sepi sendirian"
+        ],
+        answer: 0,
+        feedback: "Benar! Mengisi waktu dengan olahraga, seni, dan pramuka membuat tubuh sehat dan pikiran positif."
+      },
+      {
+        icon: "🧠",
+        category: "Bahaya Narkotika",
+        q: "Apa dampak buruk penyalahgunaan narkotika bagi pelajar Sekolah Dasar?",
+        options: [
+          "Membuat tubuh menjadi lebih kuat berlari",
+          "Merusak kesehatan otak, mengganggu konsentrasi belajar, dan merusak masa depan",
+          "Membuat nilai ujian otomatis meningkat",
+          "Menambah banyak sahabat sejati"
+        ],
+        answer: 1,
+        feedback: "Tepat! Narkotika merusak otak, kesehatan tubuh, dan menghambat kita meraih cita-cita."
+      },
+      {
+        icon: "🏠",
+        category: "Komunikasi Keluarga",
+        q: "Mengapa bercerita secara terbuka kepada orang tua di rumah sangat penting?",
+        options: [
+          "Supaya selalu dibelikan mainan baru",
+          "Orang tua dapat melindungi, membimbing, dan membantu saat kita menghadapi masalah",
+          "Agar tidak perlu mengerjakan PR",
+          "Supaya boleh tidur larut malam"
+        ],
+        answer: 1,
+        feedback: "Hebat! Orang tua adalah pelindung utama kita di rumah. Jangan ragu bercerita kepada mereka."
+      },
+      {
+        icon: "🏫",
+        category: "Orang Dewasa Terpercaya",
+        q: "Di lingkungan sekolah, kepada siapa saja kamu dapat melapor jika melihat hal mencurigakan?",
+        options: [
+          "Guru kelas, Kepala Sekolah, Guru BK, atau petugas keamanan sekolah",
+          "Orang asing yang lewat di depan gerbang",
+          "Tidak melapor kepada siapa pun",
+          "Hanya menulisnya di tembok kelas"
+        ],
+        answer: 0,
+        feedback: "Benar! Guru dan petugas sekolah selalu siap menjaga keselamatan seluruh siswa."
+      },
+      {
+        icon: "🍬",
+        category: "Waspada Benda Tak Dikenal",
+        q: "Kamu melihat permen tanpa kemasan yang tergeletak di bangku taman umum. Apa tindakanmu?",
+        options: [
+          "Mengambil dan memakannya",
+          "Membiarkannya dan mencuci tangan jika tidak sengaja menyentuhnya",
+          "Membagikannya kepada teman bermain",
+          "Menyimpannya di saku celana"
+        ],
+        answer: 1,
+        feedback: "Pintar! Makanan yang tergeletak sembarangan tidak higienis dan bisa membahayakan kesehatan."
+      },
+      {
+        icon: "🌟",
+        category: "Kepercayaan Diri",
+        q: "Temanmu berkata, 'Kalau kamu tidak mau mencoba ini, kamu bukan teman kami.' Sikap Agen Cilik adalah...",
+        options: [
+          "Menuruti kemauannya agar tetap punya teman",
+          "Menolak karena teman sejati tidak pernah mengajak pada hal berbahaya",
+          "Menangis dan menyembunyikan barang tersebut",
+          "Ikut mengajak anak lain"
+        ],
+        answer: 1,
+        feedback: "Luar biasa! Teman yang baik selalu mengajak pada kebaikan dan keselamatan."
+      },
+      {
+        icon: "🏥",
+        category: "Kesehatan Tubuh",
+        q: "Saat kamu sakit kepala di sekolah, langkah aman yang harus kamu lakukan adalah...",
+        options: [
+          "Meminta obat sembarangan dari teman",
+          "Melapor kepada guru untuk diantar ke UKS (Unit Kesehatan Sekolah)",
+          "Membeli obat sendiri tanpa petunjuk orang dewasa",
+          "Menahannya tanpa memberi tahu guru"
+        ],
+        answer: 1,
+        feedback: "Tepat sekali! Petugas UKS dan guru akan membantu memberikan penanganan yang aman."
+      },
+      {
+        icon: "📱",
+        category: "Keamanan Digital",
+        q: "Jika ada pesan dari akun tidak dikenal di internet yang menawarkan hadiah atau barang mencurigakan, apa tindakanmu?",
+        options: [
+          "Memberikan alamat rumah lengkap",
+          "Mengabaikan, memblokir, dan memberi tahu orang tua",
+          "Mengajak bertemu sendirian di taman",
+          "Menyebarkan tautannya ke grup kelas"
+        ],
+        answer: 1,
+        feedback: "Hebat! Selalu libatkan orang tua saat menemukan pesan mencurigakan di dunia digital."
+      },
+      {
+        icon: "🚶",
+        category: "Pulang Sekolah Aman",
+        q: "Seseorang yang tidak dikenal menghentikan motor di depan sekolah dan mengajakmu pulang bersama. Apa yang harus kamu lakukan?",
+        options: [
+          "Langsung naik ke motornya",
+          "Menolak, mundur masuk ke area sekolah, dan melapor ke guru atau satpam",
+          "Berjalan mengikutinya ke tempat sepi",
+          "Menerima uang yang diberikannya"
+        ],
+        answer: 1,
+        feedback: "Sangat aman! Jangan pernah ikut dengan orang yang tidak dikenal tanpa izin orang tua."
+      },
+      {
+        icon: "📚",
+        category: "Meraih Cita-Cita",
+        q: "Kunci utama agar pelajar Indonesia bisa meraih cita-cita setinggi langit adalah...",
+        options: [
+          "Hidup sehat, rajin belajar, berakhlak baik, dan menjauhi narkotika",
+          "Mencoba segala zat berbahaya",
+          "Sering membolos sekolah",
+          "Tidak mendengarkan nasihat orang tua"
+        ],
+        answer: 0,
+        feedback: "Benar! Tubuh sehat dan pikiran cerdas adalah modal utama meraih masa depan gemilang."
+      },
+      {
+        icon: "🛑",
+        category: "Ketegasan Diri",
+        q: "Apa arti sikap 'Asertif' bagi seorang Agen Cilik?",
+        options: [
+          "Berani menyampaikan penolakan secara tegas, sopan, dan tanpa menyakiti orang lain",
+          "Selalu mengikuti semua ajakan teman",
+          "Suka marah dan berteriak-teriak",
+          "Takut berbicara dengan guru"
+        ],
+        answer: 0,
+        feedback: "Keren! Sikap asertif membuatmu mampu melindungi diri dengan percaya diri."
+      },
+      {
+        icon: "🍎",
+        category: "Gaya Hidup Sehat",
+        q: "Manakah kebiasaan harian yang membantu otak dan tubuh kita tumbuh kuat?",
+        options: [
+          "Sarapan bergizi, minum air putih cukup, olahraga, dan tidur teratur",
+          "Begadang bermain game sampai pagi",
+          "Minum minuman energi sembarangan",
+          "Malas bergerak sepanjang hari"
+        ],
+        answer: 0,
+        feedback: "Mantap! Pola hidup sehat menjaga daya tahan tubuh dan fokus belajar."
+      },
+      {
+        icon: "🔍",
+        category: "Kewaspadaan Lingkungan",
+        q: "Jika kamu melihat ada kakak kelas dipaksa menyimpan bungkusan mencurigakan oleh orang luar sekolah, apa yang kamu lakukan?",
+        options: [
+          "Ikut mendekat dan merekamnya dari jarak dekat",
+          "Segera mencari guru atau petugas keamanan sekolah untuk melaporkan kejadian tersebut",
+          "Mengambil bungkusan itu sendiri",
+          "Pura-pura tidak tahu selamanya"
+        ],
+        answer: 1,
+        feedback: "Tindakan pahlawan! Melapor kepada orang dewasa yang berwenang menjaga semua siswa tetap aman."
+      },
+      {
+        icon: "🎯",
+        category: "Tanggung Jawab Diri",
+        q: "Siapa yang paling bertanggung jawab menjaga kesehatan tubuh kita sendiri?",
+        options: [
+          "Diri kita sendiri dengan bimbingan orang tua dan guru",
+          "Orang asing di jalan",
+          "Teman yang suka mengajak hal berbahaya",
+          "Tidak ada yang perlu menjaga"
+        ],
+        answer: 0,
+        feedback: "Benar! Tubuh kita adalah anugerah berharga yang wajib kita jaga dengan baik."
+      },
+      {
+        icon: "🌈",
+        category: "Lingkungan Positif",
+        q: "Ciri-ciri kelompok pertemanan yang sehat di sekolah adalah...",
+        options: [
+          "Saling mendukung belajar, bermain sportif, dan mengingatkan dalam kebaikan",
+          "Saling mengejek dan merahasiakan pelanggaran berbahaya",
+          "Memaksa teman melakukan hal yang tidak disukai",
+          "Mengucilkan teman yang patuh aturan"
+        ],
+        answer: 0,
+        feedback: "Hebat! Pilihlah lingkaran pertemanan yang membuatmu tumbuh menjadi anak hebat."
+      },
+      {
+        icon: "🚑",
+        category: "Pertolongan Darurat",
+        q: "Jika ada anggota keluarga atau teman tiba-tiba pusing berat setelah salah minum obat, tindakan pertama adalah...",
+        options: [
+          "Memberinya obat lain secara acak",
+          "Segera memanggil orang dewasa dan membawanya ke puskesmas atau rumah sakit",
+          "Menyuruhnya tidur saja tanpa diperiksa",
+          "Menyembunyikan kejadiannya"
+        ],
+        answer: 1,
+        feedback: "Tepat! Penanganan medis oleh tenaga kesehatan sangat penting saat terjadi keracunan obat."
+      },
+      {
+        icon: "🛡️",
+        category: "Perlindungan Diri",
+        q: "Mengapa peredaran gelap narkotika sangat berbahaya bagi masyarakat?",
+        options: [
+          "Dapat merusak kesehatan generasi muda dan mengganggu keamanan lingkungan",
+          "Membuat lingkungan menjadi lebih bersih",
+          "Membantu siswa lebih rajin membaca",
+          "Tidak memiliki dampak apa pun"
+        ],
+        answer: 0,
+        feedback: "Benar! Bersama-sama kita menjaga sekolah tetap bersih dari bahaya narkotika."
+      }
+    ];
+
+    /* DATA MINI-GAME 2: SAFE OR UNSAFE (12 KARTU PERILAKU AMAN VS TIDAK AMAN) */
+    const SAFE_UNSAFE_CARDS = [
+      { id: 1, icon: "⚽", text: "Berolahraga sepak bola bersama teman di lapangan sekolah", safe: true, explain: "Olahraga menyehatkan tubuh dan menjauhkan kita dari kegiatan negatif!" },
+      { id: 2, icon: "💊", text: "Menerima tablet atau pil dari orang yang tidak dikenal", safe: false, explain: "Jangan pernah menerima obat atau tablet dari orang tak dikenal!" },
+      { id: 3, icon: "👩‍⚕️", text: "Minum obat sesuai resep dokter dan pendampingan orang tua", safe: true, explain: "Obat hanya aman dikonsumsi sesuai aturan dokter dan orang tua." },
+      { id: 4, icon: "📦", text: "Membuka paket misterius yang ditemukan di pinggir jalan", safe: false, explain: "Barang tak dikenal tidak boleh disentuh atau dibuka. Segera lapor guru/orang tua!" },
+      { id: 5, icon: "🗣️", text: "Segera melapor kepada guru saat melihat situasi mencurigakan", safe: true, explain: "Melapor kepada guru adalah langkah cerdas untuk menjaga keselamatan." },
+      { id: 6, icon: "🎒", text: "Menitipkan atau menyimpan barang titipan orang asing di tas", safe: false, explain: "Jangan mau dititipi barang yang tidak diketahui isinya!" },
+      { id: 7, icon: "✋", text: "Mengatakan TIDAK dengan tegas saat diajak melakukan hal berbahaya", safe: true, explain: "Berani berkata TIDAK melindungi masa depanmu!" },
+      { id: 8, icon: "🥤", text: "Meminum minuman terbuka pemberian orang asing di taman", safe: false, explain: "Waspada! Jangan menerima makanan/minuman terbuka dari orang asing." },
+      { id: 9, icon: "📚", text: "Mengikuti kegiatan ekstrakurikuler pramuka dan membaca di perpustakaan", safe: true, explain: "Kegiatan positif membuat kita cerdas, terampil, dan berprestasi." },
+      { id: 10, icon: "🤫", text: "Menyembunyikan masalah teman yang terjerumus zat berbahaya", safe: false, explain: "Teman yang bermasalah butuh bantuan orang dewasa, bukan dirahasiakan." }
+    ];
+
+    /* DATA MINI-GAME 4A: MEMORY MATCH PAIRS */
+    const MEMORY_PAIRS = [
+      { pairId: 1, type: "Situasi", icon: "💊", text: "Ditawari obat tak dikenal" },
+      { pairId: 1, type: "Tindakan", icon: "✋", text: "Tolak tegas & lapor guru" },
+      { pairId: 2, type: "Situasi", icon: "📦", text: "Paket misterius di pagar" },
+      { pairId: 2, type: "Tindakan", icon: "🏃", text: "Jauhi & beri tahu satpam" },
+      { pairId: 3, type: "Situasi", icon: "🤒", text: "Sakit kepala di sekolah" },
+      { pairId: 3, type: "Tindakan", icon: "🏥", text: "Periksa ke ruang UKS" },
+      { pairId: 4, type: "Situasi", icon: "😢", text: "Teman diajak hal berbahaya" },
+      { pairId: 4, type: "Tindakan", icon: "🤝", text: "Dampingi melapor ke guru BK" }
+    ];
+
+    /* DATA MINI-GAME 4B: SAFE PATH SCENARIOS */
+    const SAFE_PATH_SCENARIOS = [
+      {
+        title: "Persimpangan Pulang Sekolah",
+        story: "Saat pulang sekolah, temanmu mengajak lewat jalan sepi karena ada orang asing yang menjanjikan hadiah misterius. Jalur mana yang kamu pilih?",
+        paths: [
+          { label: "Jalur A: Ikut ke tempat sepi demi hadiah", safe: false, hint: "Bimo: Hati-hati! Tempat sepi dan janji orang asing sangat berisiko." },
+          { label: "Jalur B: Menolak ajakan & pulang lewat jalur ramai bersama teman sekolah", safe: true, hint: "Tepat! Selalu pilih jalan yang aman, ramai, dan dikenal." },
+          { label: "Jalur C: Pergi sendirian tanpa memberi tahu siapa pun", safe: false, hint: "Bimo: Berjalan sendirian tanpa kabar membuat orang tua khawatir. Pilih jalur bersama!" }
+        ]
+      },
+      {
+        title: "Persimpangan Menolong Sahabat",
+        story: "Kamu melihat sahabatmu kebingungan karena dipaksa menyimpan bungkusan tak dikenal oleh seseorang. Langkah penyelamatan mana yang kamu ambil?",
+        paths: [
+          { label: "Jalur A: Ikut menyimpan bungkusan itu di tasmu", safe: false, hint: "Bimo: Jangan menyimpan barang mencurigakan! Itu bisa membahayakan kalian berdua." },
+          { label: "Jalur B: Memarahi sahabatmu dan meninggalkannya", safe: false, hint: "Bimo: Sahabatmu sedang butuh pertolongan, jangan ditinggalkan sendiri ya!" },
+          { label: "Jalur C: Ajak sahabatmu menjauh dan segera melapor ke Guru Kelas", safe: true, hint: "Luar biasa! Kamu berhasil menolong sahabat dengan cara paling aman!" }
+        ]
+      }
+    ];
+
+    /* DATA MINI-GAME 5: FINAL BOSS (5 SKENARIO "BINGUNG SI PENGACAU PILIHAN") */
+    const FINAL_BOSS_SCENARIOS = [
+      {
+        num: 1,
+        challenge: "BINGUNG berbisik: 'Coba saja tablet ini, katanya bisa bikin tidak mengantuk saat belajar!'",
+        choices: [
+          { label: "🛡️ LANGKAH AMAN: Menolak tegas karena obat tanpa resep dokter sangat berbahaya bagi otak dan tubuh.", safe: true },
+          { label: "⚠️ LANGKAH KURANG AMAN: Menyimpannya dulu di saku untuk dilihat nanti.", safe: false, tip: "Bimo: Jangan disimpan ya! Barang berbahaya harus langsung ditolak dan dilaporkan." },
+          { label: "🚨 LANGKAH BERISIKO: Mencobanya sedikit saja agar tidak penasaran.", safe: false, tip: "Bimo: Mencoba zat tak dikenal sangat berbahaya bagi kesehatanmu!" }
+        ]
+      },
+      {
+        num: 2,
+        challenge: "BINGUNG berbisik: 'Ada bungkusan jatuh di dekat gerbang sekolah. Ayo buka dan lihat isinya!'",
+        choices: [
+          { label: "🚨 LANGKAH BERISIKO: Membuka bungkusan itu bersama teman-teman.", safe: false, tip: "Bimo: Jangan pernah membuka paket tak dikenal!" },
+          { label: "🛡️ LANGKAH AMAN: Tidak menyentuhnya, menjauh, dan segera melapor kepada guru atau satpam.", safe: true },
+          { label: "⚠️ LANGKAH KURANG AMAN: Menendangnya ke pinggir jalan tanpa melapor.", safe: false, tip: "Bimo: Kalau tidak dilaporkan, anak lain bisa menyentuhnya. Yuk lapor guru!" }
+        ]
+      },
+      {
+        num: 3,
+        challenge: "BINGUNG berbisik: 'Kakak itu memberimu uang jajan asal kamu mau mengantarkan kotak kecil ini ke luar sekolah!'",
+        choices: [
+          { label: "⚠️ LANGKAH KURANG AMAN: Menerima kotaknya tapi menitipkannya ke teman lain.", safe: false, tip: "Bimo: Menitipkan ke teman juga membahayakan temanmu. Tolak sejak awal!" },
+          { label: "🚨 LANGKAH BERISIKO: Mengantarkannya karena tergiur uang jajan.", safe: false, tip: "Bimo: Jangan pernah menjadi kurir barang yang tidak diketahui isinya!" },
+          { label: "🛡️ LANGKAH AMAN: Menolak dengan tegas dan segera masuk ke ruang guru untuk melapor.", safe: true }
+        ]
+      },
+      {
+        num: 4,
+        challenge: "BINGUNG berbisik: 'Kalau kamu menolak ajakan temanmu, nanti kamu tidak punya teman bermain lagi!'",
+        choices: [
+          { label: "🛡️ LANGKAH AMAN: Percaya diri berkata TIDAK dan memilih teman yang mengajak pada kebaikan.", safe: true },
+          { label: "🚨 LANGKAH BERISIKO: Mengikuti ajakan berbahaya supaya dianggap hebat.", safe: false, tip: "Bimo: Anak hebat adalah yang berani melindungi dirinya sendiri!" },
+          { label: "⚠️ LANGKAH KURANG AMAN: Diam saja dan ikut pergi ke tempat yang tidak nyaman.", safe: false, tip: "Bimo: Kalau merasa tidak nyaman, segera katakan tidak dan pergi ke tempat aman." }
+        ]
+      },
+      {
+        num: 5,
+        challenge: "BINGUNG berbisik: 'Temanmu tampak ketakutan karena ditawari zat berbahaya. Biarkan saja, bukan urusanmu!'",
+        choices: [
+          { label: "🚨 LANGKAH BERISIKO: Mengejek teman tersebut di depan kelas.", safe: false, tip: "Bimo: Mengejek tidak menyelesaikan masalah. Jadilah sahabat yang peduli!" },
+          { label: "🛡️ LANGKAH AMAN: Mendampingi teman dengan empati dan mengajaknya melapor ke Guru BK atau orang tua.", safe: true },
+          { label: "⚠️ LANGKAH KURANG AMAN: Merahasiakannya sendirian tanpa memberi tahu orang dewasa.", safe: false, tip: "Bimo: Masalah seperti ini perlu bantuan guru atau orang tua agar temanmu terlindungi." }
+        ]
+      }
+    ];
+
+    /* =========================================================================
+       4. GAME STATE MANAGEMENT
+    ========================================================================= */
+    const GameState = {
+      screen: 'opening', // opening | map | zone | victory | commitment
+      mode: 'solo', // solo | team
+      soloScore: 0,
+      soloAnswered: 0,
+      soloCorrect: 0,
+      activeTeamIndex: 0,
+      teams: [
+        { id: 0, name: 'TIM BIRU', motto: 'Penjaga Masa Depan', icon: '🔵', color: 'blue', bg: 'bg-blue-500', border: 'border-blue-700', text: 'text-blue-700', lightBg: 'bg-blue-50', score: 0, missions: 0 },
+        { id: 1, name: 'TIM HIJAU', motto: 'Sahabat Sehat', icon: '🟢', color: 'emerald', bg: 'bg-emerald-500', border: 'border-emerald-700', text: 'text-emerald-700', lightBg: 'bg-emerald-50', score: 0, missions: 0 },
+        { id: 2, name: 'TIM KUNING', motto: 'Agen Cerdas', icon: '🟡', color: 'amber', bg: 'bg-amber-400', border: 'border-amber-600', text: 'text-amber-700', lightBg: 'bg-amber-50', score: 0, missions: 0 },
+        { id: 3, name: 'TIM UNGU', motto: 'Pelindung Generasi', icon: '🟣', color: 'purple', bg: 'bg-purple-500', border: 'border-purple-700', text: 'text-purple-700', lightBg: 'bg-purple-50', score: 0, missions: 0 }
+      ],
+      completedZones: { 1: false, 2: false, 3: false, 4: false, 5: false },
+      badges: [],
+      settings: {
+        questionsPerZone: 5,
+        timerEnabled: false
+      },
+      // Active zone runtime state
+      currentZone: null,
+      zoneStep: 0,
+      zoneData: null,
+      locked: false,
+      timerInterval: null,
+      timeLeft: 10,
+      selectedCardId: null // for tap-to-place in Safe or Unsafe
+    };
+
+    /* =========================================================================
+       5. HELPER UTILITIES (SHUFFLE, POPUP SCORE, CONFETTI, FULLSCREEN)
+    ========================================================================= */
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function addPoints(points, label = `+${points} ✨`) {
+      if (GameState.mode === 'solo') {
+        GameState.soloScore += points;
+      } else {
+        GameState.teams[GameState.activeTeamIndex].score += points;
+      }
+      AudioEngine.sfxCoin();
+      spawnScorePopup(label);
+      renderScoreboard();
+    }
+
+    function advanceTeamTurn() {
+      if (GameState.mode === 'team') {
+        GameState.activeTeamIndex = (GameState.activeTeamIndex + 1) % 4;
+        renderScoreboard();
+      }
+    }
+
+    function selectActiveTeam(idx) {
+      AudioEngine.sfxClick();
+      GameState.activeTeamIndex = idx;
+      renderScoreboard();
+      const team = GameState.teams[idx];
+      spawnScorePopup(`${team.icon} GILIRAN ${team.name}!`);
+      AudioEngine.speak(`Giliran ${team.name}, ${team.motto}!`);
+    }
+
+    function spawnScorePopup(text) {
+      const container = document.getElementById('popup-container');
+      const el = document.createElement('div');
+      el.className = 'score-popup text-4xl md:text-6xl font-black text-amber-300 text-stroke-dark px-6 py-2 rounded-full bg-slate-900/70 border-4 border-amber-300 shadow-2xl';
+      el.style.left = `${35 + Math.random() * 30}%`;
+      el.style.top = `${35 + Math.random() * 20}%`;
+      el.textContent = text;
+      container.appendChild(el);
+      setTimeout(() => el.remove(), 1400);
+    }
+
+    /* Confetti Canvas Engine */
+    const ConfettiFX = {
+      particles: [],
+      running: false,
+      burst(count = 70) {
+        const canvas = document.getElementById('fx-canvas');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const colors = ['#facc15', '#38bdf8', '#34d399', '#a855f7', '#fb923c', '#f43f5e'];
+        for (let i = 0; i < count; i++) {
+          this.particles.push({
+            x: canvas.width * (0.2 + Math.random() * 0.6),
+            y: canvas.height * 0.45,
+            vx: (Math.random() - 0.5) * 18,
+            vy: -Math.random() * 16 - 4,
+            size: 8 + Math.random() * 10,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rot: Math.random() * 360,
+            vrot: (Math.random() - 0.5) * 14,
+            life: 100 + Math.random() * 40
+          });
+        }
+        if (!this.running) {
+          this.running = true;
+          this.loop();
+        }
+      },
+      loop() {
+        const canvas = document.getElementById('fx-canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        this.particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.45;
+          p.rot += p.vrot;
+          p.life--;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rot * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
+          ctx.restore();
+        });
+        this.particles = this.particles.filter(p => p.life > 0 && p.y < canvas.height + 30);
+        if (this.particles.length > 0) {
+          requestAnimationFrame(() => this.loop());
+        } else {
+          this.running = false;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+    };
+
+    function toggleFullscreen() {
+      AudioEngine.sfxClick();
+      const docEl = document.documentElement;
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (docEl.requestFullscreen) {
+          docEl.requestFullscreen().catch(() => {});
+        } else if (docEl.webkitRequestFullscreen) {
+          docEl.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    function openModal(id) {
+      AudioEngine.sfxClick();
+      document.getElementById(id).classList.remove('hidden');
+      if (id === 'modal-teacher') updateTeacherModalUI();
+    }
+
+    function closeModal(id) {
+      AudioEngine.sfxClick();
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function toggleGlobalMute() {
+      AudioEngine.settings.muted = !AudioEngine.settings.muted;
+      if (!AudioEngine.settings.muted) AudioEngine.sfxClick();
+      document.getElementById('mute-icon-top').textContent = AudioEngine.settings.muted ? '🔇' : '🔊';
+      document.getElementById('mute-label-top').textContent = AudioEngine.settings.muted ? 'BISU' : 'SUARA';
+    }
+
+    function toggleAudioSetting(key) {
+      AudioEngine.settings[key] = !AudioEngine.settings[key];
+      AudioEngine.sfxClick();
+      const badge = document.getElementById(`status-${key}`);
+      if (AudioEngine.settings[key]) {
+        badge.textContent = 'AKTIF';
+        badge.className = 'px-4 py-1 rounded-xl bg-emerald-500 text-white';
+      } else {
+        badge.textContent = 'MATI';
+        badge.className = 'px-4 py-1 rounded-xl bg-slate-400 text-white';
+      }
+    }
+
+    function setMasterVolume(val) {
+      AudioEngine.settings.volume = Number(val) / 100;
+      document.getElementById('vol-display').textContent = `${val}%`;
+    }
+
+    function testAudioVoice() {
+      AudioEngine.sfxCorrect();
+      AudioEngine.speak("Halo Agent Cilik! Saya Bot Bimo, siap menemani petualangan sekolah hebat!");
+    }
+
+    /* Teacher Controls */
+    function setQuestionsPerZone(num) {
+      AudioEngine.sfxClick();
+      GameState.settings.questionsPerZone = num;
+      updateTeacherModalUI();
+    }
+
+    function setTimerEnabled(val) {
+      AudioEngine.sfxClick();
+      GameState.settings.timerEnabled = val;
+      updateTeacherModalUI();
+    }
+
+    function updateTeacherModalUI() {
+      [3, 5, 7].forEach(n => {
+        const el = document.getElementById(`qcount-${n}`);
+        if (el) {
+          el.className = GameState.settings.questionsPerZone === n
+            ? 'btn-sm-arcade py-3 rounded-xl bg-purple-600 text-white border-purple-800 font-black text-xl'
+            : 'btn-sm-arcade py-3 rounded-xl bg-white border-purple-300 font-black text-xl text-slate-800';
+        }
+      });
+      const tOff = document.getElementById('timer-off');
+      const tOn = document.getElementById('timer-on');
+      if (tOff && tOn) {
+        tOff.className = !GameState.settings.timerEnabled
+          ? 'btn-sm-arcade py-3 rounded-xl bg-sky-600 text-white border-sky-800 font-black text-xl'
+          : 'btn-sm-arcade py-3 rounded-xl bg-white border-sky-300 font-black text-xl text-slate-800';
+        tOn.className = GameState.settings.timerEnabled
+          ? 'btn-sm-arcade py-3 rounded-xl bg-sky-600 text-white border-sky-800 font-black text-xl'
+          : 'btn-sm-arcade py-3 rounded-xl bg-white border-sky-300 font-black text-xl text-slate-800';
+      }
+      const doneCount = Object.values(GameState.completedZones).filter(Boolean).length;
+      document.getElementById('teacher-session-summary').textContent =
+        `Mode: ${GameState.mode === 'team' ? 'Kompetisi 4 Tim' : 'Solo Agent'} • Zona Selesai: ${doneCount}/5 • Bank Soal: ${QUESTION_BANK.length} Soal`;
+    }
+
+    function resetAllGameProgress() {
+      AudioEngine.sfxWrong();
+      clearZoneTimer();
+      GameState.soloScore = 0;
+      GameState.soloAnswered = 0;
+      GameState.soloCorrect = 0;
+      GameState.activeTeamIndex = 0;
+      GameState.teams.forEach(t => { t.score = 0; t.missions = 0; });
+      GameState.completedZones = { 1: false, 2: false, 3: false, 4: false, 5: false };
+      GameState.badges = [];
+      closeModal('modal-teacher');
+      renderScoreboard();
+      goToScreen('opening');
+      spawnScorePopup('🔄 SKOR & MISI DIRESET!');
+    }
+
+    function clearZoneTimer() {
+      if (GameState.timerInterval) {
+        clearInterval(GameState.timerInterval);
+        GameState.timerInterval = null;
+      }
+    }
+
+    function handleHomeBtn() {
+      AudioEngine.sfxClick();
+      clearZoneTimer();
+      if (GameState.screen === 'opening') return;
+      goToScreen('opening');
+    }
+
+    function handleBackBtn() {
+      AudioEngine.sfxClick();
+      clearZoneTimer();
+      goToScreen('map');
+    }
+
+    /* =========================================================================
+       6. SCOREBOARD RENDERER (SOLO VS 4 TEAMS IFP HEADER)
+    ========================================================================= */
+    function renderScoreboard() {
+      const container = document.getElementById('scoreboard-area');
+      const backBtn = document.getElementById('btn-back');
+      if (GameState.screen === 'zone') {
+        backBtn.classList.remove('hidden');
+      } else {
+        backBtn.classList.add('hidden');
+      }
+
+      if (GameState.mode === 'solo') {
+        const doneCount = Object.values(GameState.completedZones).filter(Boolean).length;
+        container.innerHTML = `
+          <div class="flex items-center gap-3 md:gap-6 bg-gradient-to-r from-sky-100 via-white to-amber-100 px-5 py-2 rounded-2xl border-4 border-sky-300 shadow-inner">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl md:text-3xl">🦸</span>
+              <div>
+                <div class="text-xs font-extrabold text-sky-700 uppercase">MODE SOLO AGENT</div>
+                <div class="text-xl md:text-3xl font-black text-slate-900">SKOR: <span class="text-amber-600">${GameState.soloScore}</span> ✨</div>
+              </div>
+            </div>
+            <div class="h-10 w-1 bg-sky-200 rounded-full"></div>
+            <div class="text-center">
+              <div class="text-xs font-extrabold text-purple-700 uppercase">MISI SELESAI</div>
+              <div class="text-xl md:text-2xl font-black text-purple-800">${doneCount} / 5 🏅</div>
+            </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="grid grid-cols-4 gap-2 md:gap-3 w-full max-w-5xl">
+            ${GameState.teams.map((t, idx) => {
+              const isActive = idx === GameState.activeTeamIndex;
+              return `
+                <button onclick="selectActiveTeam(${idx})" title="Sentuh untuk pilih giliran ${t.name}"
+                  class="relative px-2 md:px-4 py-1.5 md:py-2 rounded-2xl border-4 transition-all flex items-center justify-between gap-1
+                  ${isActive
+                    ? `${t.bg} text-white border-yellow-300 scale-105 shadow-lg ring-4 ring-yellow-300/70`
+                    : `${t.lightBg} ${t.text} border-slate-300 opacity-85 hover:opacity-100`}">
+                  ${isActive ? `<span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-300 text-slate-900 text-[10px] md:text-xs font-black px-2 py-0.5 rounded-full shadow">GILIRAN</span>` : ''}
+                  <span class="text-xl md:text-2xl">${t.icon}</span>
+                  <div class="text-left leading-tight overflow-hidden">
+                    <div class="text-[11px] md:text-sm font-black truncate">${t.name.replace('TIM ', '')}</div>
+                    <div class="text-base md:text-2xl font-black">${t.score}</div>
+                  </div>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+    }
+
+    /* =========================================================================
+       7. SCREEN ROUTER & RENDERERS
+    ========================================================================= */
+    function goToScreen(screenName) {
+      clearZoneTimer();
+      GameState.screen = screenName;
+      renderScoreboard();
+      const stage = document.getElementById('main-stage');
+
+      if (screenName === 'opening') {
+        AudioEngine.startBGM('opening');
+        stage.innerHTML = renderOpeningScreen();
+      } else if (screenName === 'map') {
+        AudioEngine.startBGM('gameplay');
+        stage.innerHTML = renderMissionMapScreen();
+      } else if (screenName === 'victory') {
+        AudioEngine.startBGM('victory');
+        AudioEngine.sfxFanfare();
+        ConfettiFX.burst(110);
+        stage.innerHTML = renderVictoryScreen();
+      } else if (screenName === 'commitment') {
+        stage.innerHTML = renderCommitmentScreen();
+      }
+    }
+
+    /* -------------------------------------------------------------------------
+       SCREEN 1: HALAMAN PEMBUKA (OPENING ARCADE SCREEN)
+    ------------------------------------------------------------------------- */
+    function renderOpeningScreen() {
+      return `
+        <div class="relative w-full h-full flex flex-col items-center justify-between p-4 md:p-6 overflow-hidden">
+          <!-- Animated Futurist School Sky Background -->
+          <div class="absolute inset-0 pointer-events-none overflow-hidden">
+            <!-- Sunburst -->
+            <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-yellow-300/40 blur-2xl"></div>
+            <!-- Moving Cartoon Clouds -->
+            <div class="absolute top-8 left-0 opacity-85" style="animation: cloudDrift 28s linear infinite;">
+              <div class="w-40 h-14 bg-white rounded-full shadow-md relative"><div class="w-20 h-20 bg-white rounded-full -top-8 left-6 absolute"></div><div class="w-16 h-16 bg-white rounded-full -top-5 left-20 absolute"></div></div>
+            </div>
+            <div class="absolute top-24 left-0 opacity-75" style="animation: cloudDrift 38s linear infinite 8s;">
+              <div class="w-48 h-16 bg-white rounded-full shadow-md relative"><div class="w-24 h-24 bg-white rounded-full -top-10 left-8 absolute"></div></div>
+            </div>
+
+            <!-- Glowing Adventure Portal Center Back -->
+            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full border-[16px] border-dashed border-yellow-300/45 anim-portal"></div>
+            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] rounded-full bg-gradient-to-tr from-sky-300/30 via-purple-300/30 to-emerald-300/30 blur-xl"></div>
+
+            <!-- Futuristic School Silhouette & Rolling Green Hills -->
+            <svg viewBox="0 0 1920 320" class="absolute bottom-0 left-0 w-full h-auto" preserveAspectRatio="none">
+              <path d="M0 160 Q480 60 960 150 T1920 120 L1920 320 L0 320 Z" fill="#34d399"/>
+              <path d="M0 200 Q600 130 1200 200 T1920 170 L1920 320 L0 320 Z" fill="#10b981"/>
+              <!-- Stylized School Building -->
+              <rect x="780" y="95" width="360" height="130" rx="18" fill="#fef3c7" stroke="#f59e0b" stroke-width="6"/>
+              <polygon points="755,100 960,28 1165,100" fill="#ef4444" stroke="#b91c1c" stroke-width="6" stroke-linejoin="round"/>
+              <circle cx="960" cy="68" r="20" fill="#ffffff" stroke="#0284c7" stroke-width="5"/>
+              <rect x="928" y="150" width="64" height="75" rx="10" fill="#0284c7"/>
+              <rect x="815" y="130" width="44" height="40" rx="8" fill="#38bdf8"/>
+              <rect x="1061" y="130" width="44" height="40" rx="8" fill="#38bdf8"/>
+            </svg>
+          </div>
+
+          <!-- Top Tagline Pill -->
+          <div class="relative z-10 mt-1 px-6 py-2 rounded-full bg-white/95 border-4 border-amber-400 shadow-xl flex items-center gap-2">
+            <span class="text-2xl">🛡️</span>
+            <span class="text-base md:text-2xl font-black text-sky-800 tracking-wide">“Berani, Cerdas, Peduli, Lindungi Masa Depan!”</span>
+            <span class="text-2xl">✨</span>
+          </div>
+
+          <!-- Center Hero Title & 3 Characters -->
+          <div class="relative z-10 flex-1 w-full max-w-7xl grid grid-cols-12 items-center gap-2 my-1">
+            <!-- Left Character: Kapten Raka -->
+            <div class="col-span-3 h-52 md:h-72 flex flex-col items-center justify-center anim-float">
+              ${CharactersSVG.raka('happy')}
+              <span class="mt-1 px-4 py-1 rounded-full bg-sky-600 text-white font-black text-sm md:text-lg border-2 border-white shadow">KAPTEN RAKA</span>
+            </div>
+
+            <!-- Center Game Logo -->
+            <div class="col-span-6 text-center flex flex-col items-center justify-center">
+              <div class="inline-block px-5 py-1.5 rounded-2xl bg-purple-600 text-yellow-300 font-black text-sm md:text-xl border-2 border-yellow-300 shadow-lg mb-2">
+                🎮 ARCADE EDUKASI INTERAKTIF SD
+              </div>
+              <h1 class="font-arcade text-4xl sm:text-6xl md:text-7xl font-black text-white leading-none text-stroke-dark tracking-tight">
+                AGENT CILIK
+              </h1>
+              <div class="mt-2 px-6 py-2 rounded-3xl bg-gradient-to-r from-amber-400 via-yellow-300 to-orange-400 border-4 border-white shadow-2xl">
+                <h2 class="font-arcade text-2xl sm:text-4xl md:text-5xl font-black text-slate-900">
+                  MISI SEKOLAH HEBAT
+                </h2>
+              </div>
+              <p class="mt-3 text-lg md:text-2xl font-extrabold text-white drop-shadow-md">
+                “Siap menjadi pelindung diri dan masa depan?”
+              </p>
+
+              <!-- Bot Bimo Speech Bubble -->
+              <div onclick="AudioEngine.speak('Agent Cilik, siap menjalankan misi? Sentuh tombol Mulai Misi atau Mode Bermain Tim!')"
+                class="mt-3 cursor-pointer bg-white/95 hover:bg-sky-50 px-5 py-2.5 rounded-2xl border-4 border-sky-400 shadow-lg flex items-center gap-3 max-w-xl">
+                <div class="w-14 h-14 shrink-0">${CharactersSVG.bimo('happy')}</div>
+                <p class="text-left text-sm md:text-lg font-extrabold text-slate-800">
+                  <span class="text-sky-600 font-black">BOT BIMO:</span> “Agent Cilik, siap menjalankan misi? Sentuh tombol besar di bawah!”
+                </p>
+              </div>
+            </div>
+
+            <!-- Right Character: Agent Naya -->
+            <div class="col-span-3 h-52 md:h-72 flex flex-col items-center justify-center anim-float" style="animation-delay: 0.6s;">
+              ${CharactersSVG.naya('happy')}
+              <span class="mt-1 px-4 py-1 rounded-full bg-purple-600 text-white font-black text-sm md:text-lg border-2 border-white shadow">AGENT NAYA</span>
+            </div>
+          </div>
+
+          <!-- Bottom Giant IFP Action Buttons -->
+          <div class="relative z-10 w-full max-w-6xl grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 pb-2">
+            <button onclick="startSoloMode()" class="btn-arcade rounded-3xl bg-gradient-to-b from-emerald-400 to-emerald-600 hover:from-emerald-300 hover:to-emerald-500 border-emerald-800 text-white p-4 flex flex-col items-center justify-center glow-green anim-pulse-ring">
+              <span class="text-3xl md:text-4xl mb-1">▶</span>
+              <span class="text-xl md:text-2xl font-black leading-tight">MULAI MISI</span>
+              <span class="text-xs md:text-sm font-bold text-emerald-100">Mode Solo / Giliran</span>
+            </button>
+
+            <button onclick="startTeamMode()" class="btn-arcade rounded-3xl bg-gradient-to-b from-amber-300 to-orange-500 hover:from-amber-200 hover:to-orange-400 border-orange-700 text-slate-900 p-4 flex flex-col items-center justify-center glow-gold">
+              <span class="text-3xl md:text-4xl mb-1">👥</span>
+              <span class="text-xl md:text-2xl font-black leading-tight">MODE BERMAIN TIM</span>
+              <span class="text-xs md:text-sm font-extrabold text-slate-800">Kompetisi 4 Regu Kelas</span>
+            </button>
+
+            <button onclick="openModal('modal-howto')" class="btn-arcade rounded-3xl bg-gradient-to-b from-sky-400 to-blue-600 hover:from-sky-300 hover:to-blue-500 border-blue-800 text-white p-4 flex flex-col items-center justify-center glow-blue">
+              <span class="text-3xl md:text-4xl mb-1">📖</span>
+              <span class="text-xl md:text-2xl font-black leading-tight">CARA BERMAIN</span>
+              <span class="text-xs md:text-sm font-bold text-sky-100">Panduan Layar Sentuh</span>
+            </button>
+
+            <button onclick="openModal('modal-audio')" class="btn-arcade rounded-3xl bg-gradient-to-b from-purple-400 to-purple-700 hover:from-purple-300 hover:to-purple-600 border-purple-900 text-white p-4 flex flex-col items-center justify-center glow-purple">
+              <span class="text-3xl md:text-4xl mb-1">🔊</span>
+              <span class="text-xl md:text-2xl font-black leading-tight">PENGATUR SUARA</span>
+              <span class="text-xs md:text-sm font-bold text-purple-100">Musik, Efek & Narasi</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function startSoloMode() {
+      AudioEngine.init();
+      AudioEngine.sfxFanfare();
+      GameState.mode = 'solo';
+      AudioEngine.speak("Mode Solo Agent aktif! Pilih zona petualangan di peta misi.");
+      goToScreen('map');
+    }
+
+    function startTeamMode() {
+      AudioEngine.init();
+      AudioEngine.sfxFanfare();
+      GameState.mode = 'team';
+      AudioEngine.speak("Mode Bermain Tim aktif! Empat regu kelas siap bertanding!");
+      goToScreen('map');
+    }
+
+    /* -------------------------------------------------------------------------
+       SCREEN 2: PETA MISI ARCADE (5 ZONA INTERAKTIF)
+    ------------------------------------------------------------------------- */
+    function renderMissionMapScreen() {
+      const zones = [
+        {
+          id: 1,
+          code: "ZONA 1",
+          title: "KNOWLEDGE GATE",
+          subtitle: "Gerbang Pengetahuan",
+          gameType: "QUIZ BLAST",
+          icon: "📘",
+          gradient: "from-sky-400 to-blue-600",
+          border: "border-blue-800",
+          desc: "Kenali bahaya penyalahgunaan zat & keamanan obat"
+        },
+        {
+          id: 2,
+          code: "ZONA 2",
+          title: "SMART CHOICE PARK",
+          subtitle: "Taman Pilihan Cerdas",
+          gameType: "SAFE OR UNSAFE",
+          icon: "🌳",
+          gradient: "from-emerald-400 to-teal-600",
+          border: "border-teal-800",
+          desc: "Pilah perilaku aman vs tidak aman dengan sentuhan"
+        },
+        {
+          id: 3,
+          code: "ZONA 3",
+          title: "SAFETY DETECTIVE",
+          subtitle: "Detektif Keselamatan",
+          gameType: "QUICK TAP 10 DETIK",
+          icon: "🔍",
+          gradient: "from-amber-400 to-orange-500",
+          border: "border-orange-700",
+          desc: "Tantangan cepat 10 detik mengenali situasi berisiko"
+        },
+        {
+          id: 4,
+          code: "ZONA 4",
+          title: "TEAM RESCUE",
+          subtitle: "Misi Sahabat Peduli",
+          gameType: "MEMORY & SAFE PATH",
+          icon: "🤝",
+          gradient: "from-purple-500 to-indigo-600",
+          border: "border-indigo-800",
+          desc: "Cocokkan kartu solusi & pilih jalur selamatkan teman"
+        },
+        {
+          id: 5,
+          code: "ZONA 5",
+          title: "FUTURE HERO",
+          subtitle: "Pulau Masa Depan (FINAL)",
+          gameType: "5 KEPUTUSAN KRITIS",
+          icon: "🏆",
+          gradient: "from-rose-500 via-orange-500 to-amber-500",
+          border: "border-rose-800",
+          desc: "Kalahkan Bingung Si Pengacau Pilihan!"
+        }
+      ];
+
+      const completedCount = Object.values(GameState.completedZones).filter(Boolean).length;
+
+      return `
+        <div class="relative w-full h-full flex flex-col justify-between p-4 md:p-6 overflow-hidden">
+          <!-- Header Banner -->
+          <div class="flex flex-wrap items-center justify-between gap-3 bg-white/90 backdrop-blur-md px-6 py-3 rounded-3xl border-4 border-sky-300 shadow-lg">
+            <div class="flex items-center gap-3">
+              <div class="w-14 h-14">${CharactersSVG.bimo('happy')}</div>
+              <div>
+                <h2 class="text-2xl md:text-3xl font-black text-sky-900">🗺️ PETA PETUALANGAN AGENT CILIK</h2>
+                <p class="text-sm md:text-lg font-bold text-slate-600">Sentuh salah satu zona besar di bawah untuk memulai misi!</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div class="px-4 py-2 rounded-2xl bg-amber-100 border-2 border-amber-400 text-amber-900 font-black text-lg md:text-xl">
+                ⭐ Progres: ${completedCount} / 5 Zona
+              </div>
+              ${completedCount > 0 ? `
+                <button onclick="goToScreen('victory')" class="btn-sm-arcade px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-500 border-orange-700 text-slate-900 font-black text-lg md:text-xl shadow-md">
+                  🏆 LIHAT HASIL & PIALA
+                </button>
+              ` : ''}
+            </div>
+          </div>
+
+          <!-- 5 Big Zone Cards Grid -->
+          <div class="flex-1 my-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 items-stretch">
+            ${zones.map(z => {
+              const isDone = GameState.completedZones[z.id];
+              return `
+                <button onclick="launchZone(${z.id})"
+                  class="btn-arcade rounded-3xl bg-gradient-to-b ${z.gradient} ${z.border} text-white p-4 md:p-5 flex flex-col items-center justify-between text-center shadow-xl relative overflow-hidden">
+                  ${isDone ? `
+                    <div class="absolute top-3 right-3 bg-yellow-300 text-slate-900 font-black text-xs md:text-sm px-3 py-1 rounded-full border-2 border-white shadow">
+                      ✅ SELESAI
+                    </div>
+                  ` : ''}
+                  <div class="px-3 py-1 rounded-full bg-black/25 text-xs md:text-sm font-black tracking-wider">
+                    ${z.code} • ${z.gameType}
+                  </div>
+                  <div class="text-5xl md:text-6xl my-2 drop-shadow-md">${z.icon}</div>
+                  <div>
+                    <div class="text-xl md:text-2xl font-black leading-tight">${z.subtitle}</div>
+                    <div class="text-xs font-extrabold text-white/90 uppercase tracking-wide mt-0.5">${z.title}</div>
+                  </div>
+                  <p class="text-xs md:text-sm font-bold bg-white/20 rounded-2xl p-2.5 mt-2 leading-snug">
+                    ${z.desc}
+                  </p>
+                  <div class="mt-3 w-full py-2.5 rounded-2xl bg-white text-slate-900 font-black text-base md:text-lg shadow">
+                    ${isDone ? '🔄 MAIN LAGI' : '🚀 MASUK ZONA'}
+                  </div>
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Bottom Character Encouragement Bar -->
+          <div class="bg-white/90 px-5 py-2.5 rounded-2xl border-4 border-purple-300 flex items-center justify-between gap-4 shadow-md">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 shrink-0">${CharactersSVG.raka('happy')}</div>
+              <p class="text-base md:text-xl font-extrabold text-slate-800">
+                <span class="text-sky-700 font-black">KAPTEN RAKA:</span> “Kita harus berpikir sebelum bertindak! Ayo kumpulkan semua lencana keselamatan!”
+              </p>
+            </div>
+            <button onclick="goToScreen('commitment')" class="btn-sm-arcade shrink-0 px-5 py-2.5 rounded-2xl bg-purple-600 hover:bg-purple-500 border-purple-800 text-white font-black text-base md:text-lg">
+              📜 IKRAR AGENT
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    /* =========================================================================
+       8. MINI-GAME ENGINES (ZONA 1 - 5)
+    ========================================================================= */
+    function launchZone(zoneId) {
+      AudioEngine.init();
+      AudioEngine.sfxClick();
+      clearZoneTimer();
+      GameState.currentZone = zoneId;
+      GameState.zoneStep = 0;
+      GameState.locked = false;
+      GameState.selectedCardId = null;
+
+      if (zoneId === 1) {
+        // ZONA 1: QUIZ BLAST
+        const count = GameState.settings.questionsPerZone;
+        const picked = shuffleArray(QUESTION_BANK).slice(0, count).map(q => {
+          const correctText = q.options[q.answer];
+          const shuffledOpts = shuffleArray(q.options);
+          return {
+            ...q,
+            options: shuffledOpts,
+            answer: shuffledOpts.indexOf(correctText)
+          };
+        });
+        GameState.zoneData = { questions: picked, correctCount: 0 };
+        AudioEngine.speak("Zona Satu: Gerbang Pengetahuan! Sentuh kartu jawaban yang paling aman.");
+      } else if (zoneId === 2) {
+        // ZONA 2: SAFE OR UNSAFE (6 cards)
+        const cards = shuffleArray(SAFE_UNSAFE_CARDS).slice(0, 6);
+        GameState.zoneData = { cards, index: 0, correctCount: 0 };
+        AudioEngine.speak("Zona Dua: Taman Pilihan Cerdas! Pilah kartu ke kotak Tindakan Aman atau Tindakan Tidak Aman.");
+      } else if (zoneId === 3) {
+        // ZONA 3: QUICK TAP CHALLENGE (10-second timer per question)
+        const count = Math.min(5, GameState.settings.questionsPerZone);
+        const picked = shuffleArray(QUESTION_BANK).slice(0, count).map(q => {
+          const correctText = q.options[q.answer];
+          const shuffledOpts = shuffleArray(q.options);
+          return {
+            ...q,
+            options: shuffledOpts,
+            answer: shuffledOpts.indexOf(correctText)
+          };
+        });
+        GameState.zoneData = { questions: picked, correctCount: 0 };
+        AudioEngine.speak("Zona Tiga: Detektif Keselamatan! Jawab cepat dalam sepuluh detik!");
+      } else if (zoneId === 4) {
+        // ZONA 4: MEMORY MATCH + SAFE PATH
+        const deck = [];
+        MEMORY_PAIRS.forEach(item => {
+          deck.push({ ...item, uid: `${item.pairId}-${item.type}`, matched: false, flipped: false });
+        });
+        GameState.zoneData = {
+          phase: 'memory', // 'memory' then 'safepath'
+          deck: shuffleArray(deck),
+          flippedIndices: [],
+          matchedPairs: 0,
+          pathIndex: 0
+        };
+        AudioEngine.speak("Zona Empat: Misi Sahabat Peduli! Cocokkan kartu situasi dengan tindakan amannya.");
+      } else if (zoneId === 5) {
+        // ZONA 5: FINAL BOSS "BINGUNG SI PENGACAU PILIHAN"
+        AudioEngine.startBGM('final');
+        GameState.zoneData = {
+          scenarios: FINAL_BOSS_SCENARIOS,
+          index: 0,
+          cleared: false
+        };
+        AudioEngine.speak("Pulau Masa Depan! Kalahkan Bingung Si Pengacau Pilihan dengan lima keputusan cerdas!");
+      }
+
+      GameState.screen = 'zone';
+      renderScoreboard();
+      renderCurrentZone();
+    }
+
+    function renderCurrentZone() {
+      const stage = document.getElementById('main-stage');
+      const z = GameState.currentZone;
+      if (z === 1) stage.innerHTML = renderQuizBlastUI(false);
+      else if (z === 2) stage.innerHTML = renderSafeOrUnsafeUI();
+      else if (z === 3) {
+        stage.innerHTML = renderQuizBlastUI(true);
+        startQuickTapTimer();
+      }
+      else if (z === 4) stage.innerHTML = renderZone4UI();
+      else if (z === 5) stage.innerHTML = renderFinalBossUI();
+    }
+
+    /* -------------------------------------------------------------------------
+       MINI-GAME 1 & 3: QUIZ BLAST & QUICK TAP CHALLENGE (10s)
+    ------------------------------------------------------------------------- */
+    function renderQuizBlastUI(isQuickTap) {
+      const data = GameState.zoneData;
+      const qObj = data.questions[GameState.zoneStep];
+      const total = data.questions.length;
+      const optionColors = [
+        { bg: 'from-sky-400 to-blue-600', border: 'border-blue-800', badge: 'A' },
+        { bg: 'from-emerald-400 to-green-600', border: 'border-green-800', badge: 'B' },
+        { bg: 'from-amber-400 to-orange-500', border: 'border-orange-700', badge: 'C' },
+        { bg: 'from-purple-500 to-indigo-600', border: 'border-indigo-800', badge: 'D' }
+      ];
+
+      const useTimer = isQuickTap || GameState.settings.timerEnabled;
+      const initialSec = isQuickTap ? 10 : 20;
+
+      return `
+        <div class="w-full h-full max-w-7xl mx-auto flex flex-col justify-between p-4 md:p-6">
+          <!-- Top Mission Progress & Optional Countdown -->
+          <div class="flex items-center justify-between gap-4 bg-white/90 px-6 py-3 rounded-3xl border-4 ${isQuickTap ? 'border-orange-400' : 'border-sky-300'} shadow-md">
+            <div class="flex items-center gap-3">
+              <span class="px-4 py-1.5 rounded-2xl ${isQuickTap ? 'bg-orange-500' : 'bg-sky-600'} text-white font-black text-lg md:text-xl">
+                ${isQuickTap ? '⚡ QUICK TAP CHALLENGE' : '📘 QUIZ BLAST'}
+              </span>
+              <span class="text-lg md:text-2xl font-black text-slate-800">
+                Pertanyaan ${GameState.zoneStep + 1} dari ${total}
+              </span>
+            </div>
+
+            ${useTimer ? `
+              <div id="timer-pill" class="flex items-center gap-2 px-5 py-2 rounded-2xl bg-amber-100 border-4 border-amber-500 text-amber-900 font-black text-2xl md:text-3xl">
+                <span>⏱️</span>
+                <span id="timer-seconds">${initialSec}</span>
+                <span class="text-base">detik</span>
+              </div>
+            ` : `
+              <div class="px-4 py-1.5 rounded-2xl bg-purple-100 text-purple-800 font-black text-base md:text-lg">
+                Kategori: ${qObj.category}
+              </div>
+            `}
+          </div>
+
+          <!-- Question Panel + Character Sidekick -->
+          <div class="my-3 bg-white/95 rounded-3xl border-8 border-sky-400 p-5 md:p-7 shadow-2xl grid grid-cols-12 items-center gap-4">
+            <div class="col-span-3 md:col-span-2 flex flex-col items-center justify-center">
+              <div id="zone-char-avatar" class="w-24 h-28 md:w-32 md:h-36 anim-float">
+                ${isQuickTap ? CharactersSVG.naya('happy') : CharactersSVG.raka('happy')}
+              </div>
+              <span class="mt-1 px-3 py-0.5 rounded-full bg-sky-100 text-sky-800 font-black text-xs md:text-sm">
+                ${isQuickTap ? 'AGENT NAYA' : 'KAPTEN RAKA'}
+              </span>
+            </div>
+
+            <div class="col-span-9 md:col-span-10 flex items-center gap-4">
+              <div class="hidden sm:flex w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-amber-100 border-4 border-amber-300 items-center justify-center text-5xl md:text-6xl shrink-0">
+                ${qObj.icon}
+              </div>
+              <h3 class="text-xl sm:text-2xl md:text-4xl font-black text-slate-900 leading-snug">
+                ${qObj.q}
+              </h3>
+            </div>
+          </div>
+
+          <!-- 4 Giant Touch Answer Buttons (180px+ height on IFP) -->
+          <div id="quiz-options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 flex-1 max-h-[380px]">
+            ${qObj.options.map((optText, idx) => {
+              const style = optionColors[idx];
+              return `
+                <button id="opt-btn-${idx}" onclick="submitQuizAnswer(${idx}, ${isQuickTap})"
+                  class="btn-arcade rounded-3xl bg-gradient-to-r ${style.bg} ${style.border} text-white px-5 py-4 flex items-center gap-4 text-left shadow-xl min-h-[110px] md:min-h-[155px]">
+                  <span class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white text-slate-900 font-black text-2xl md:text-3xl flex items-center justify-center shrink-0 shadow">
+                    ${style.badge}
+                  </span>
+                  <span class="text-lg sm:text-xl md:text-2xl font-extrabold leading-snug">
+                    ${optText}
+                  </span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Feedback Banner Overlay (Hidden until answered) -->
+          <div id="quiz-feedback-area" class="hidden mt-3"></div>
+        </div>
+      `;
+    }
+
+    function startQuickTapTimer() {
+      clearZoneTimer();
+      const isQuickTap = GameState.currentZone === 3;
+      if (!isQuickTap && !GameState.settings.timerEnabled) return;
+
+      GameState.timeLeft = isQuickTap ? 10 : 20;
+      GameState.timerInterval = setInterval(() => {
+        if (GameState.locked) {
+          clearZoneTimer();
+          return;
+        }
+        GameState.timeLeft--;
+        const secEl = document.getElementById('timer-seconds');
+        const pillEl = document.getElementById('timer-pill');
+        if (secEl) secEl.textContent = GameState.timeLeft;
+        if (GameState.timeLeft <= 3 && GameState.timeLeft > 0) {
+          AudioEngine.sfxTick();
+          if (pillEl) pillEl.className = 'flex items-center gap-2 px-5 py-2 rounded-2xl bg-rose-500 border-4 border-rose-800 text-white font-black text-2xl md:text-3xl animate-pulse';
+        }
+        if (GameState.timeLeft <= 0) {
+          clearZoneTimer();
+          handleQuizTimeOut(isQuickTap);
+        }
+      }, 1000);
+    }
+
+    function handleQuizTimeOut(isQuickTap) {
+      if (GameState.locked) return;
+      GameState.locked = true;
+      AudioEngine.sfxWrong();
+      const qObj = GameState.zoneData.questions[GameState.zoneStep];
+      highlightCorrectQuizButton(qObj.answer, -1);
+      showQuizFeedback(false, `⏰ WAKTU HABIS! Yuk simak jawaban amannya: ${qObj.feedback}`, isQuickTap);
+    }
+
+    function submitQuizAnswer(selectedIdx, isQuickTap) {
+      if (GameState.locked) return;
+      GameState.locked = true;
+      clearZoneTimer();
+
+      const qObj = GameState.zoneData.questions[GameState.zoneStep];
+      const isCorrect = selectedIdx === qObj.answer;
+      highlightCorrectQuizButton(qObj.answer, selectedIdx);
+
+      const charEl = document.getElementById('zone-char-avatar');
+      if (isCorrect) {
+        GameState.zoneData.correctCount++;
+        GameState.soloCorrect++;
+        AudioEngine.sfxCorrect();
+        ConfettiFX.burst(55);
+        const bonus = (isQuickTap && GameState.timeLeft >= 4) ? 50 : 0;
+        addPoints(100 + bonus, bonus > 0 ? `+150 ⚡` : `+100 ✨`);
+        if (charEl) charEl.innerHTML = CharactersSVG.raka('jump', 'anim-jump');
+        AudioEngine.speak("Mantap! Pilihan cerdas! " + qObj.feedback);
+        showQuizFeedback(true, `🌟 MANTAP! PILIHAN CERDAS! ${qObj.feedback}`, isQuickTap);
+      } else {
+        AudioEngine.sfxWrong();
+        if (charEl) charEl.innerHTML = CharactersSVG.bimo('think', 'anim-think');
+        AudioEngine.speak("Yuk kita belajar lagi! " + qObj.feedback);
+        showQuizFeedback(false, `💡 YUK, KITA BELAJAR LAGI! ${qObj.feedback}`, isQuickTap);
+      }
+      GameState.soloAnswered++;
+    }
+
+    function highlightCorrectQuizButton(correctIdx, selectedIdx) {
+      for (let i = 0; i < 4; i++) {
+        const btn = document.getElementById(`opt-btn-${i}`);
+        if (!btn) continue;
+        btn.disabled = true;
+        if (i === correctIdx) {
+          btn.classList.add('ring-8', 'ring-yellow-300', 'scale-[1.02]');
+        } else if (i === selectedIdx) {
+          btn.classList.add('opacity-60', 'ring-4', 'ring-rose-500');
+        } else {
+          btn.classList.add('opacity-45');
+        }
+      }
+    }
+
+    function showQuizFeedback(isCorrect, message, isQuickTap) {
+      const fb = document.getElementById('quiz-feedback-area');
+      if (!fb) return;
+      fb.classList.remove('hidden');
+      fb.innerHTML = `
+        <div class="rounded-3xl p-4 md:p-5 border-4 ${isCorrect ? 'bg-emerald-50 border-emerald-500 text-emerald-950' : 'bg-amber-50 border-amber-500 text-amber-950'} shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-14 h-14 shrink-0">${CharactersSVG.bimo(isCorrect ? 'happy' : 'think')}</div>
+            <p class="text-lg md:text-2xl font-extrabold leading-snug">${message}</p>
+          </div>
+          <button onclick="nextQuizStep(${isQuickTap})" class="btn-sm-arcade shrink-0 px-8 py-4 rounded-2xl bg-sky-600 hover:bg-sky-500 border-sky-800 text-white text-xl md:text-2xl font-black shadow-lg">
+            LANJUT ➔
+          </button>
+        </div>
+      `;
+    }
+
+    function nextQuizStep(isQuickTap) {
+      AudioEngine.sfxClick();
+      advanceTeamTurn();
+      GameState.zoneStep++;
+      GameState.locked = false;
+      if (GameState.zoneStep >= GameState.zoneData.questions.length) {
+        completeZone(GameState.currentZone);
+      } else {
+        renderCurrentZone();
+      }
+    }
+
+    /* -------------------------------------------------------------------------
+       MINI-GAME 2: SAFE OR UNSAFE (DRAG-AND-DROP + TAP-TO-PLACE)
+    ------------------------------------------------------------------------- */
+    function renderSafeOrUnsafeUI() {
+      const data = GameState.zoneData;
+      const card = data.cards[data.index];
+      const total = data.cards.length;
+
+      return `
+        <div class="w-full h-full max-w-7xl mx-auto flex flex-col justify-between p-4 md:p-6">
+          <!-- Header -->
+          <div class="flex items-center justify-between bg-white/90 px-6 py-3 rounded-3xl border-4 border-emerald-400 shadow-md">
+            <div class="flex items-center gap-3">
+              <span class="px-4 py-1.5 rounded-2xl bg-emerald-600 text-white font-black text-lg md:text-xl">🌳 SAFE OR UNSAFE</span>
+              <span class="text-lg md:text-2xl font-black text-slate-800">Kartu Perilaku ${data.index + 1} dari ${total}</span>
+            </div>
+            <span class="text-base md:text-xl font-extrabold text-emerald-800">Seret kartu ATAU ketuk kotak kategori!</span>
+          </div>
+
+          <!-- Center Draggable / Tappable Situation Card -->
+          <div class="my-2 flex-1 flex flex-col items-center justify-center">
+            <div id="draggable-situation-card" draggable="true"
+              ondragstart="onCardDragStart(event)"
+              onclick="selectSituationCard()"
+              class="cursor-grab active:cursor-grabbing bg-white rounded-3xl border-8 ${GameState.selectedCardId === card.id ? 'border-yellow-400 scale-105 ring-8 ring-yellow-300/60' : 'border-sky-400'} p-6 md:p-8 max-w-2xl w-full text-center shadow-2xl transition-transform">
+              <div class="inline-block px-4 py-1 rounded-full bg-sky-100 text-sky-800 font-black text-sm md:text-base mb-2">
+                👆 SENTUH & PILIH KATEGORI DI BAWAH
+              </div>
+              <div class="text-6xl md:text-7xl my-2">${card.icon}</div>
+              <h3 class="text-2xl md:text-4xl font-black text-slate-900 leading-snug">
+                “${card.text}”
+              </h3>
+            </div>
+          </div>
+
+          <!-- Two Giant Drop / Tap Target Zones -->
+          <div id="safe-unsafe-targets" class="grid grid-cols-2 gap-4 md:gap-8 h-44 md:h-52">
+            <button onclick="classifySituationCard(true)"
+              ondragover="event.preventDefault()"
+              ondrop="classifySituationCard(true)"
+              class="btn-arcade rounded-3xl bg-gradient-to-b from-emerald-400 to-green-600 hover:from-emerald-300 hover:to-green-500 border-green-800 text-white p-4 flex flex-col items-center justify-center shadow-2xl">
+              <span class="text-4xl md:text-5xl mb-1">🟢🛡️</span>
+              <span class="text-2xl md:text-4xl font-black">TINDAKAN AMAN</span>
+              <span class="text-sm md:text-lg font-bold text-emerald-100">Melindungi diri & menyehatkan</span>
+            </button>
+
+            <button onclick="classifySituationCard(false)"
+              ondragover="event.preventDefault()"
+              ondrop="classifySituationCard(false)"
+              class="btn-arcade rounded-3xl bg-gradient-to-b from-rose-500 to-red-600 hover:from-rose-400 hover:to-red-500 border-red-800 text-white p-4 flex flex-col items-center justify-center shadow-2xl">
+              <span class="text-4xl md:text-5xl mb-1">🔴⚠️</span>
+              <span class="text-2xl md:text-4xl font-black">TINDAKAN TIDAK AMAN</span>
+              <span class="text-sm md:text-lg font-bold text-rose-100">Berisiko & harus dihindari</span>
+            </button>
+          </div>
+
+          <!-- Feedback Box -->
+          <div id="safe-unsafe-feedback" class="hidden mt-3"></div>
+        </div>
+      `;
+    }
+
+    function onCardDragStart(e) {
+      e.dataTransfer.setData('text/plain', 'card');
+    }
+
+    function selectSituationCard() {
+      if (GameState.locked) return;
+      AudioEngine.sfxClick();
+      const card = GameState.zoneData.cards[GameState.zoneData.index];
+      GameState.selectedCardId = card.id;
+      renderCurrentZone();
+    }
+
+    function classifySituationCard(chosenSafe) {
+      if (GameState.locked) return;
+      GameState.locked = true;
+      const data = GameState.zoneData;
+      const card = data.cards[data.index];
+      const isCorrect = chosenSafe === card.safe;
+
+      const targets = document.getElementById('safe-unsafe-targets');
+      if (targets) targets.classList.add('opacity-50', 'pointer-events-none');
+
+      if (isCorrect) {
+        data.correctCount++;
+        AudioEngine.sfxCorrect();
+        ConfettiFX.burst(45);
+        addPoints(100, '+100 ✨');
+        AudioEngine.speak("Benar sekali! " + card.explain);
+      } else {
+        AudioEngine.sfxWrong();
+        AudioEngine.speak("Yuk perhatikan lagi! " + card.explain);
+      }
+
+      const fb = document.getElementById('safe-unsafe-feedback');
+      fb.classList.remove('hidden');
+      fb.innerHTML = `
+        <div class="rounded-3xl p-4 md:p-5 border-4 ${isCorrect ? 'bg-emerald-50 border-emerald-500 text-emerald-950' : 'bg-amber-50 border-amber-500 text-amber-950'} shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-14 h-14 shrink-0">${CharactersSVG.bimo(isCorrect ? 'happy' : 'think')}</div>
+            <p class="text-lg md:text-2xl font-extrabold">
+              <span class="font-black">${isCorrect ? '✅ TEPAT!' : '💡 BELAJAR BERSAMA:'}</span> ${card.explain}
+            </p>
+          </div>
+          <button onclick="nextSafeUnsafeCard()" class="btn-sm-arcade shrink-0 px-8 py-4 rounded-2xl bg-sky-600 border-sky-800 text-white text-xl md:text-2xl font-black">
+            KARTU BERIKUTNYA ➔
+          </button>
+        </div>
+      `;
+    }
+
+    function nextSafeUnsafeCard() {
+      AudioEngine.sfxClick();
+      advanceTeamTurn();
+      GameState.zoneData.index++;
+      GameState.locked = false;
+      GameState.selectedCardId = null;
+      if (GameState.zoneData.index >= GameState.zoneData.cards.length) {
+        completeZone(2);
+      } else {
+        renderCurrentZone();
+      }
+    }
+
+    /* -------------------------------------------------------------------------
+       MINI-GAME 4: MEMORY MATCH & SAFE PATH (ZONA 4 — TEAM RESCUE)
+    ------------------------------------------------------------------------- */
+    function renderZone4UI() {
+      const data = GameState.zoneData;
+      if (data.phase === 'memory') {
+        return `
+          <div class="w-full h-full max-w-7xl mx-auto flex flex-col justify-between p-4 md:p-6">
+            <div class="flex items-center justify-between bg-white/90 px-6 py-3 rounded-3xl border-4 border-purple-400 shadow-md">
+              <div class="flex items-center gap-3">
+                <span class="px-4 py-1.5 rounded-2xl bg-purple-600 text-white font-black text-lg md:text-xl">🃏 MEMORY MATCH</span>
+                <span class="text-lg md:text-2xl font-black text-slate-800">Pasangan Ditemukan: ${data.matchedPairs} / 4</span>
+              </div>
+              <span class="text-base md:text-xl font-extrabold text-purple-800">Cocokkan Situasi ↔ Tindakan Aman!</span>
+            </div>
+
+            <div class="my-3 flex-1 grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+              ${data.deck.map((c, idx) => {
+                const isOpen = c.flipped || c.matched;
+                return `
+                  <button onclick="flipMemoryCard(${idx})" ${c.matched ? 'disabled' : ''}
+                    class="btn-arcade rounded-3xl p-3 flex flex-col items-center justify-center text-center shadow-xl transition-all
+                    ${c.matched
+                      ? 'bg-emerald-100 border-emerald-500 text-emerald-950 scale-95'
+                      : isOpen
+                        ? 'bg-white border-amber-400 text-slate-900'
+                        : 'bg-gradient-to-b from-purple-500 to-indigo-700 border-indigo-900 text-white'}">
+                    ${isOpen ? `
+                      <span class="px-3 py-0.5 rounded-full text-xs font-black ${c.type === 'Situasi' ? 'bg-amber-200 text-amber-900' : 'bg-emerald-200 text-emerald-900'}">
+                        ${c.type.toUpperCase()}
+                      </span>
+                      <span class="text-4xl md:text-5xl my-1">${c.icon}</span>
+                      <span class="text-base md:text-xl font-black leading-tight">${c.text}</span>
+                    ` : `
+                      <span class="text-5xl md:text-6xl">🛡️</span>
+                      <span class="text-base md:text-xl font-black mt-1">AGENT CARD</span>
+                    `}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      } else {
+        // SAFE PATH PHASE
+        const scen = SAFE_PATH_SCENARIOS[data.pathIndex];
+        return `
+          <div class="w-full h-full max-w-7xl mx-auto flex flex-col justify-between p-4 md:p-6">
+            <div class="flex items-center justify-between bg-white/90 px-6 py-3 rounded-3xl border-4 border-indigo-400 shadow-md">
+              <span class="px-4 py-1.5 rounded-2xl bg-indigo-600 text-white font-black text-lg md:text-xl">🛤️ SAFE PATH — PERSIMPANGAN ${data.pathIndex + 1}/2</span>
+              <span class="text-lg md:text-2xl font-black text-indigo-900">${scen.title}</span>
+            </div>
+
+            <div class="my-3 bg-white/95 rounded-3xl border-8 border-indigo-400 p-5 md:p-6 shadow-xl flex items-center gap-4">
+              <div class="w-24 h-28 shrink-0 anim-float">${CharactersSVG.naya('happy')}</div>
+              <div>
+                <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 font-black text-sm">MISI SAHABAT PEDULI</span>
+                <h3 class="text-xl md:text-3xl font-black text-slate-900 mt-1 leading-snug">${scen.story}</h3>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
+              ${scen.paths.map((p, idx) => `
+                <button onclick="chooseSafePath(${idx})"
+                  class="btn-arcade rounded-3xl bg-gradient-to-b from-sky-400 to-indigo-600 hover:from-sky-300 hover:to-indigo-500 border-indigo-800 text-white p-5 flex flex-col items-center justify-center text-center shadow-xl">
+                  <span class="text-4xl md:text-5xl mb-2">${idx === 0 ? '⬅️' : idx === 1 ? '⬆️' : '➡️'}</span>
+                  <span class="text-lg md:text-2xl font-black leading-snug">${p.label}</span>
+                </button>
+              `).join('')}
+            </div>
+
+            <div id="safepath-feedback" class="hidden mt-3"></div>
+          </div>
+        `;
+      }
+    }
+
+    function flipMemoryCard(idx) {
+      if (GameState.locked) return;
+      const data = GameState.zoneData;
+      const card = data.deck[idx];
+      if (card.flipped || card.matched) return;
+
+      AudioEngine.sfxClick();
+      card.flipped = true;
+      data.flippedIndices.push(idx);
+      renderCurrentZone();
+
+      if (data.flippedIndices.length === 2) {
+        GameState.locked = true;
+        const [i1, i2] = data.flippedIndices;
+        const c1 = data.deck[i1];
+        const c2 = data.deck[i2];
+
+        if (c1.pairId === c2.pairId) {
+          setTimeout(() => {
+            c1.matched = true;
+            c2.matched = true;
+            data.matchedPairs++;
+            data.flippedIndices = [];
+            GameState.locked = false;
+            AudioEngine.sfxCorrect();
+            ConfettiFX.burst(40);
+            addPoints(100, '+100 ✨');
+            advanceTeamTurn();
+
+            if (data.matchedPairs >= 4) {
+              addPoints(200, '+300 BONUS MEMORY 🏆');
+              AudioEngine.speak("Hebat! Semua kartu cocok! Sekarang lanjut ke persimpangan jalur aman.");
+              data.phase = 'safepath';
+            }
+            renderCurrentZone();
+          }, 450);
+        } else {
+          setTimeout(() => {
+            c1.flipped = false;
+            c2.flipped = false;
+            data.flippedIndices = [];
+            GameState.locked = false;
+            AudioEngine.sfxWrong();
+            renderCurrentZone();
+          }, 950);
+        }
+      }
+    }
+
+    function chooseSafePath(pathIdx) {
+      if (GameState.locked) return;
+      const data = GameState.zoneData;
+      const scen = SAFE_PATH_SCENARIOS[data.pathIndex];
+      const chosen = scen.paths[pathIdx];
+      const fb = document.getElementById('safepath-feedback');
+      fb.classList.remove('hidden');
+
+      if (chosen.safe) {
+        GameState.locked = true;
+        AudioEngine.sfxCorrect();
+        ConfettiFX.burst(55);
+        addPoints(150, '+150 ⭐');
+        AudioEngine.speak("Pilihan jalur aman! " + chosen.hint);
+        fb.innerHTML = `
+          <div class="rounded-3xl p-4 md:p-5 bg-emerald-50 border-4 border-emerald-500 text-emerald-950 shadow-xl flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-14 h-14 shrink-0">${CharactersSVG.raka('jump')}</div>
+              <p class="text-lg md:text-2xl font-extrabold">✅ ${chosen.hint}</p>
+            </div>
+            <button onclick="nextSafePathStep()" class="btn-sm-arcade px-8 py-4 rounded-2xl bg-emerald-600 border-emerald-800 text-white text-xl font-black">
+              LANJUT ➔
+            </button>
+          </div>
+        `;
+      } else {
+        AudioEngine.sfxWrong();
+        AudioEngine.speak(chosen.hint);
+        fb.innerHTML = `
+          <div class="rounded-3xl p-4 md:p-5 bg-amber-50 border-4 border-amber-500 text-amber-950 shadow-xl flex items-center gap-3">
+            <div class="w-14 h-14 shrink-0">${CharactersSVG.bimo('think')}</div>
+            <p class="text-lg md:text-2xl font-extrabold">⚠️ ${chosen.hint} — <span class="underline">Sentuh jalur lain yang lebih aman!</span></p>
+          </div>
+        `;
+      }
+    }
+
+    function nextSafePathStep() {
+      AudioEngine.sfxClick();
+      advanceTeamTurn();
+      GameState.locked = false;
+      GameState.zoneData.pathIndex++;
+      if (GameState.zoneData.pathIndex >= SAFE_PATH_SCENARIOS.length) {
+        completeZone(4);
+      } else {
+        renderCurrentZone();
+      }
+    }
+
+    /* -------------------------------------------------------------------------
+       MINI-GAME 5: FINAL BOSS ("BINGUNG SI PENGACAU PILIHAN")
+    ------------------------------------------------------------------------- */
+    function renderFinalBossUI() {
+      const data = GameState.zoneData;
+      const scen = data.scenarios[data.index];
+
+      return `
+        <div class="w-full h-full max-w-7xl mx-auto flex flex-col justify-between p-4 md:p-6">
+          <!-- Boss Progress Header -->
+          <div class="flex items-center justify-between bg-white/95 px-6 py-3 rounded-3xl border-4 border-rose-400 shadow-lg">
+            <span class="px-4 py-1.5 rounded-2xl bg-rose-600 text-white font-black text-lg md:text-xl">
+              🏆 FINAL CHALLENGE • TANTANGAN ${data.index + 1} / 5
+            </span>
+            <div class="flex gap-2">
+              ${[0,1,2,3,4].map(i => `
+                <span class="w-9 h-9 rounded-full flex items-center justify-center font-black text-lg border-2
+                  ${i < data.index ? 'bg-emerald-500 text-white border-emerald-700' : i === data.index ? 'bg-amber-400 text-slate-900 border-amber-600 scale-110' : 'bg-slate-200 text-slate-500 border-slate-300'}">
+                  ${i < data.index ? '★' : i + 1}
+                </span>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Cartoon Cloud Boss + Scenario -->
+          <div class="my-2 bg-white/95 rounded-3xl border-8 border-purple-400 p-4 md:p-6 shadow-2xl grid grid-cols-12 items-center gap-4">
+            <div class="col-span-4 md:col-span-3 flex flex-col items-center">
+              <div id="boss-cloud-svg" class="w-40 h-28 md:w-52 md:h-36">
+                ${CharactersSVG.bossCloud(false)}
+              </div>
+              <span class="px-3 py-1 rounded-full bg-slate-700 text-yellow-300 font-black text-xs md:text-sm">
+                BINGUNG SI PENGACAU PILIHAN
+              </span>
+            </div>
+
+            <div class="col-span-8 md:col-span-9">
+              <div class="inline-block px-4 py-1 rounded-full bg-rose-100 text-rose-800 font-black text-sm md:text-base mb-1">
+                ⚠️ UJIAN KEPUTUSAN AGENT CILIK
+              </div>
+              <h3 class="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 leading-snug">
+                ${scen.challenge}
+              </h3>
+            </div>
+          </div>
+
+          <!-- 3 Decision Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 flex-1">
+            ${scen.choices.map((ch, idx) => `
+              <button onclick="resolveBossChoice(${idx})"
+                class="btn-arcade rounded-3xl bg-gradient-to-b from-sky-500 to-blue-700 hover:from-sky-400 hover:to-blue-600 border-blue-900 text-white p-5 flex flex-col items-center justify-center text-center shadow-xl">
+                <span class="text-lg sm:text-xl md:text-2xl font-extrabold leading-snug">${ch.label}</span>
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- Feedback Area -->
+          <div id="boss-feedback" class="hidden mt-3"></div>
+        </div>
+      `;
+    }
+
+    function resolveBossChoice(idx) {
+      if (GameState.locked) return;
+      const data = GameState.zoneData;
+      const scen = data.scenarios[data.index];
+      const chosen = scen.choices[idx];
+      const fb = document.getElementById('boss-feedback');
+      fb.classList.remove('hidden');
+
+      if (chosen.safe) {
+        GameState.locked = true;
+        AudioEngine.sfxCorrect();
+        ConfettiFX.burst(65);
+        addPoints(150, '+150 🛡️');
+        const cloudEl = document.getElementById('boss-cloud-svg');
+        if (cloudEl) cloudEl.innerHTML = CharactersSVG.bossCloud(true);
+        AudioEngine.speak("Pilihan cerdas mengalahkan keraguan!");
+
+        fb.innerHTML = `
+          <div class="rounded-3xl p-4 md:p-5 bg-emerald-50 border-4 border-emerald-500 text-emerald-950 shadow-xl flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-14 h-14 shrink-0">${CharactersSVG.raka('jump')}</div>
+              <p class="text-lg md:text-2xl font-black">☀️ HEBAT! Awan keraguan berubah cerah! Lanjutkan tantangan berikutnya!</p>
+            </div>
+            <button onclick="nextBossScenario()" class="btn-sm-arcade shrink-0 px-8 py-4 rounded-2xl bg-emerald-600 border-emerald-800 text-white text-xl md:text-2xl font-black">
+              LANJUT ➔
+            </button>
+          </div>
+        `;
+      } else {
+        AudioEngine.sfxWrong();
+        AudioEngine.speak(chosen.tip);
+        fb.innerHTML = `
+          <div class="rounded-3xl p-4 md:p-5 bg-amber-50 border-4 border-amber-500 text-amber-950 shadow-xl flex items-center gap-3">
+            <div class="w-14 h-14 shrink-0">${CharactersSVG.bimo('think')}</div>
+            <p class="text-lg md:text-2xl font-extrabold">${chosen.tip} — <span class="underline font-black">Ayo pilih langkah yang paling aman!</span></p>
+          </div>
+        `;
+      }
+    }
+
+    function nextBossScenario() {
+      AudioEngine.sfxClick();
+      advanceTeamTurn();
+      GameState.locked = false;
+      GameState.zoneData.index++;
+      if (GameState.zoneData.index >= GameState.zoneData.scenarios.length) {
+        completeZone(5);
+      } else {
+        renderCurrentZone();
+      }
+    }
+
+    /* -------------------------------------------------------------------------
+       ZONE COMPLETION CELEBRATION OVERLAY
+    ------------------------------------------------------------------------- */
+    function completeZone(zoneId) {
+      clearZoneTimer();
+      GameState.completedZones[zoneId] = true;
+      if (GameState.mode === 'team') {
+        GameState.teams[GameState.activeTeamIndex].missions++;
+      }
+
+      const badgeNames = {
+        1: "🏅 Lencana Pengetahuan",
+        2: "🌿 Lencana Pilihan Cerdas",
+        3: "🔍 Lencana Detektif Sigap",
+        4: "🤝 Lencana Sahabat Peduli",
+        5: "👑 Lencana Pahlawan Masa Depan"
+      };
+      if (!GameState.badges.includes(badgeNames[zoneId])) {
+        GameState.badges.push(badgeNames[zoneId]);
+      }
+
+      AudioEngine.sfxFanfare();
+      ConfettiFX.burst(95);
+      addPoints(250, '+250 MISI SELESAI 🎉');
+
+      const allDone = Object.values(GameState.completedZones).every(Boolean);
+      const stage = document.getElementById('main-stage');
+
+      AudioEngine.speak(zoneId === 5
+        ? "Pilihan cerdas mengalahkan bahaya! Semua tantangan berhasil ditaklukkan!"
+        : "Selamat! Misi zona ini berhasil diselesaikan!");
+
+      stage.innerHTML = `
+        <div class="w-full h-full flex items-center justify-center p-4">
+          <div class="bg-white/95 rounded-3xl border-8 border-amber-400 max-w-4xl w-full p-6 md:p-10 text-center shadow-2xl">
+            <div class="inline-block px-5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 font-black text-lg md:text-xl mb-2">
+              🎉 ZONA ${zoneId} BERHASIL DITAKLUKKAN!
+            </div>
+            <h2 class="text-3xl md:text-5xl font-black text-slate-900 mb-3">
+              ${zoneId === 5 ? '“PILIHAN CERDAS MENGALAHKAN BAHAYA!”' : 'MISI SELESAI DENGAN GEMILANG!'}
+            </h2>
+
+            <div class="flex justify-center items-center gap-4 my-4">
+              <div class="w-28 h-32 anim-jump">${CharactersSVG.raka('jump')}</div>
+              <div class="px-6 py-4 rounded-3xl bg-gradient-to-b from-amber-300 to-yellow-500 border-4 border-amber-700 text-slate-900 shadow-xl">
+                <div class="text-sm font-black uppercase">PENGHARGAAN BARU</div>
+                <div class="text-2xl md:text-3xl font-black mt-1">${badgeNames[zoneId]}</div>
+                <div class="text-lg font-extrabold mt-1">+250 Poin Bonus Misi!</div>
+              </div>
+              <div class="w-28 h-32 anim-jump" style="animation-delay: 0.2s;">${CharactersSVG.naya('jump')}</div>
+            </div>
+
+            <div class="mt-6 flex flex-wrap justify-center gap-4">
+              ${allDone || zoneId === 5 ? `
+                <button onclick="goToScreen('victory')" class="btn-arcade px-10 py-5 rounded-3xl bg-gradient-to-r from-amber-400 to-orange-500 border-orange-700 text-slate-900 text-2xl md:text-3xl font-black shadow-xl glow-gold">
+                  🏆 RAYAKAN KEMENANGAN!
+                </button>
+              ` : `
+                <button onclick="goToScreen('map')" class="btn-arcade px-10 py-5 rounded-3xl bg-gradient-to-r from-emerald-400 to-green-600 border-green-800 text-white text-2xl md:text-3xl font-black shadow-xl glow-green">
+                  🗺️ LANJUT KE ZONA BERIKUTNYA ➔
+                </button>
+              `}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /* -------------------------------------------------------------------------
+       SCREEN 3: HALAMAN KEMENANGAN (VICTORY SCREEN)
+    ------------------------------------------------------------------------- */
+    function renderVictoryScreen() {
+      const doneCount = Object.values(GameState.completedZones).filter(Boolean).length;
+      let rankTitle = "AGENT CERDAS";
+      if (doneCount <= 1) rankTitle = "AGENT PEMULA";
+      else if (doneCount === 2) rankTitle = "AGENT WASPADA";
+      else if (doneCount <= 4) rankTitle = "AGENT CERDAS";
+      else rankTitle = "PAHLAWAN SEKOLAH HEBAT";
+
+      const sortedTeams = [...GameState.teams].sort((a, b) => b.score - a.score);
+
+      return `
+        <div class="w-full h-full max-w-7xl mx-auto flex flex-col justify-between p-4 md:p-6 overflow-y-auto">
+          <div class="bg-white/95 rounded-3xl border-8 border-amber-400 p-5 md:p-7 shadow-2xl text-center">
+            <div class="text-5xl md:text-6xl mb-1">🏆</div>
+            <h1 class="font-arcade text-3xl md:text-5xl font-black text-amber-600">
+              MISSION COMPLETED!
+            </h1>
+            <h2 class="text-2xl md:text-4xl font-black text-slate-900 mt-1">
+              “SELAMAT, AGENT CILIK!”
+            </h2>
+
+            <div class="mt-3 inline-block px-6 py-2 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-yellow-300 font-black text-xl md:text-3xl border-4 border-yellow-300 shadow-lg">
+              🎖️ GELAR: ${rankTitle}
+            </div>
+
+            <!-- 4 Characters Celebration Row -->
+            <div class="grid grid-cols-4 gap-2 max-w-3xl mx-auto my-3 h-32 md:h-40">
+              <div class="anim-jump">${CharactersSVG.raka('jump')}</div>
+              <div class="anim-jump" style="animation-delay:0.15s">${CharactersSVG.naya('jump')}</div>
+              <div class="anim-bot">${CharactersSVG.bimo('happy')}</div>
+              <div class="anim-float">${CharactersSVG.guruLina()}</div>
+            </div>
+
+            <!-- Score Summary (Solo or 4 Teams Podium) -->
+            ${GameState.mode === 'solo' ? `
+              <div class="max-w-xl mx-auto bg-sky-50 rounded-2xl border-4 border-sky-300 p-4">
+                <div class="text-xl font-black text-sky-800">TOTAL SKOR AGENT</div>
+                <div class="text-4xl md:text-5xl font-black text-amber-600 my-1">${GameState.soloScore} POIN ✨</div>
+                <div class="text-base font-bold text-slate-600">Misi Selesai: ${doneCount} / 5 Zona</div>
+              </div>
+            ` : `
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-5xl mx-auto">
+                ${sortedTeams.map((t, rank) => `
+                  <div class="p-3 rounded-2xl border-4 ${rank === 0 ? 'bg-amber-100 border-amber-500 scale-105 shadow-lg' : 'bg-slate-50 border-slate-300'}">
+                    <div class="text-sm font-black text-slate-600">${rank === 0 ? '👑 JUARA 1' : `PERINGKAT ${rank + 1}`}</div>
+                    <div class="text-2xl font-black mt-0.5">${t.icon} ${t.name}</div>
+                    <div class="text-3xl font-black text-slate-900 mt-1">${t.score}</div>
+                  </div>
+                `).join('')}
+              </div>
+            `}
+
+            <!-- Badges Collected -->
+            <div class="mt-3 flex flex-wrap justify-center gap-2">
+              ${(GameState.badges.length ? GameState.badges : ['🏅 Lencana Agen Berani']).map(b => `
+                <span class="px-4 py-1.5 rounded-full bg-emerald-100 border-2 border-emerald-400 text-emerald-900 font-black text-sm md:text-base">
+                  ${b}
+                </span>
+              `).join('')}
+            </div>
+
+            <!-- Giant Action Buttons -->
+            <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3 max-w-5xl mx-auto">
+              <button onclick="goToScreen('commitment')" class="btn-arcade py-4 px-6 rounded-3xl bg-gradient-to-b from-purple-500 to-purple-700 border-purple-900 text-white text-xl md:text-2xl font-black shadow-xl glow-purple">
+                📜 KOMITMEN AGENT CILIK
+              </button>
+              <button onclick="goToScreen('map')" class="btn-arcade py-4 px-6 rounded-3xl bg-gradient-to-b from-emerald-400 to-emerald-600 border-emerald-800 text-white text-xl md:text-2xl font-black shadow-xl glow-green">
+                🔄 LANJUT / MAIN LAGI
+              </button>
+              <button onclick="goToScreen('opening')" class="btn-arcade py-4 px-6 rounded-3xl bg-gradient-to-b from-sky-400 to-blue-600 border-blue-800 text-white text-xl md:text-2xl font-black shadow-xl glow-blue">
+                🏠 MENU UTAMA
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /* -------------------------------------------------------------------------
+       SCREEN 4: KOMITMEN AKHIR (IKRAR BERSAMA SISWA DI DEPAN IFP)
+    ------------------------------------------------------------------------- */
+    function renderCommitmentScreen() {
+      AudioEngine.speak("Ayo seluruh siswa berdiri dan angkat tangan kanan bersama! Bacakan Komitmen Agent Cilik Pelindung Diri!");
+      return `
+        <div class="w-full h-full max-w-6xl mx-auto flex flex-col justify-center p-4 md:p-6">
+          <div class="bg-white/95 rounded-3xl border-8 border-sky-400 p-6 md:p-8 shadow-2xl text-center relative overflow-hidden">
+            <div class="inline-block px-5 py-1.5 rounded-full bg-amber-100 border-2 border-amber-400 text-amber-900 font-black text-base md:text-xl mb-2">
+              ✋ IKRAR BERSAMA DI DEPAN KELAS
+            </div>
+
+            <h2 class="font-arcade text-3xl md:text-5xl font-black text-sky-800 mb-4">
+              AKU AGENT CILIK PELINDUNG DIRI!
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 items-center gap-6 text-left">
+              <!-- Guru Lina & Raka -->
+              <div class="md:col-span-4 flex flex-col items-center justify-center">
+                <div class="flex items-end justify-center h-44 md:h-56">
+                  <div class="w-32 h-44">${CharactersSVG.guruLina()}</div>
+                  <div class="w-32 h-44 -ml-4 anim-float">${CharactersSVG.raka('jump')}</div>
+                </div>
+                <p class="mt-2 text-center text-sm md:text-base font-extrabold text-slate-600 bg-sky-50 p-3 rounded-2xl border-2 border-sky-200">
+                  “Jika menemukan situasi berbahaya, jangan bertindak sendiri. Segera minta bantuan orang dewasa terpercaya.”
+                </p>
+              </div>
+
+              <!-- 6 Poin Janji Agent Cilik -->
+              <div class="md:col-span-8 space-y-2.5 text-lg md:text-2xl font-extrabold text-slate-800 bg-gradient-to-br from-sky-50 via-white to-purple-50 p-5 md:p-6 rounded-3xl border-4 border-purple-200">
+                <p class="flex items-center gap-3"><span class="text-2xl">🛡️</span> Aku berani menolak ajakan yang membahayakan.</p>
+                <p class="flex items-center gap-3"><span class="text-2xl">💊</span> Aku tidak menggunakan obat sembarangan.</p>
+                <p class="flex items-center gap-3"><span class="text-2xl">🚫</span> Aku menjauhi barang dan situasi yang mencurigakan.</p>
+                <p class="flex items-center gap-3"><span class="text-2xl">🎒</span> Aku tidak membantu membawa atau menyimpan barang yang tidak diketahui.</p>
+                <p class="flex items-center gap-3"><span class="text-2xl">🤝</span> Aku peduli kepada teman.</p>
+                <p class="flex items-center gap-3"><span class="text-2xl">👩‍🏫</span> Aku berani meminta bantuan guru, orang tua, atau orang dewasa terpercaya.</p>
+              </div>
+            </div>
+
+            <!-- Pledge Confirmation Button -->
+            <div id="pledge-action-area" class="mt-6 flex flex-wrap justify-center gap-4">
+              <button onclick="confirmStudentPledge()" class="btn-arcade px-12 py-5 rounded-3xl bg-gradient-to-b from-emerald-400 to-green-600 hover:from-emerald-300 hover:to-green-500 border-green-800 text-white text-2xl md:text-4xl font-black shadow-2xl glow-green anim-pulse-ring">
+                ✋ AKU SIAP!
+              </button>
+              <button onclick="goToScreen('opening')" class="btn-sm-arcade px-8 py-5 rounded-3xl bg-slate-200 border-slate-400 text-slate-800 text-xl md:text-2xl font-black">
+                🏠 MENU UTAMA
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function confirmStudentPledge() {
+      AudioEngine.sfxFanfare();
+      ConfettiFX.burst(130);
+      AudioEngine.speak("Yeay! Selamat! Kalian resmi menjadi Agent Cilik Pelindung Diri Sekolah Hebat!");
+      const area = document.getElementById('pledge-action-area');
+      area.innerHTML = `
+        <div class="w-full bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 border-4 border-amber-600 rounded-3xl p-4 md:p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl">
+          <div class="flex items-center gap-3 text-left">
+            <span class="text-5xl">🙌🏅</span>
+            <div>
+              <div class="text-2xl md:text-3xl font-black text-slate-900">YEAY! BADGE “AGENT PELINDUNG DIRI” DIBERIKAN!</div>
+              <div class="text-base md:text-xl font-bold text-slate-800">Teruslah menjadi generasi Indonesia yang sehat, cerdas, dan berprestasi!</div>
+            </div>
+          </div>
+          <button onclick="goToScreen('opening')" class="btn-sm-arcade shrink-0 px-8 py-4 rounded-2xl bg-sky-600 border-sky-800 text-white text-xl md:text-2xl font-black">
+            🏠 KEMBALI KE AWAL
+          </button>
+        </div>
+      `;
+    }
+
+    /* =========================================================================
+       9. INITIALIZATION ON WINDOW LOAD
+    ========================================================================= */
+    window.addEventListener('load', () => {
+      renderScoreboard();
+      goToScreen('opening');
+    });
+
+    window.addEventListener('resize', () => {
+      const canvas = document.getElementById('fx-canvas');
+      if (canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+    });
+  </script>
+</body>
+</html>
